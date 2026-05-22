@@ -15,6 +15,6 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 ## Project Structure
-- [Frontend (Flutter)](https://github.com/<your-username>/computer-shop-frontend)
-- [Backend (NestJS)](https://github.com/<your-username>/computer-shop-backend)
+- [Frontend (Flutter)](https://github.com/dalin836/computer-shop-frontend)
+- [Backend (NestJS)](https://github.com/dalin836/computer-shop-backend)
 
