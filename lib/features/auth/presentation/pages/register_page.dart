@@ -22,6 +22,27 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 	bool _obscureConfirm = true;
 
 	@override
+	void initState() {
+		super.initState();
+
+		ref.listenManual<AuthState>(authProvider, (previous, next) {
+			if (next.status == AuthStatus.authenticated) {
+				WidgetsBinding.instance.addPostFrameCallback((_) {
+					context.go('/login');
+				});
+			}
+
+			if (next.status == AuthStatus.error) {
+				final msg = next.message ?? 'Registration failed.';
+				ScaffoldMessenger.of(context).showSnackBar(
+					SnackBar(content: Text(msg)));
+
+				ref.read(authProvider.notifier).clearError();
+			}
+		});
+	}
+
+	@override
 	void dispose() {
 		_fullNameController.dispose();
 		_emailController.dispose();
@@ -35,19 +56,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 	Widget build(BuildContext context) {
 		final size = MediaQuery.of(context).size;
 		final authState = ref.watch(authProvider);
-
-		ref.listen<AuthState>(authProvider, (previous, next) {
-			if (previous?.status == next.status) return;
-			if (next.status == AuthStatus.authenticated) {
-				context.go('/home');
-			} else if (next.status == AuthStatus.error) {
-				final msg = next.message ?? 'Registration failed.';
-				ScaffoldMessenger.of(context).showSnackBar(
-					SnackBar(content: Text(msg)),
-				);
-				ref.read(authProvider.notifier).clearError();
-			}
-		});
+	
 
 		return Scaffold(
 			body: Container(

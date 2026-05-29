@@ -1,40 +1,58 @@
-import 'package:dio/dio.dart';
-
-import '../../core/config/api_config.dart';
 import '../../products/domain/product_model.dart';
 import '../domain/promotion_model.dart';
 
 class HomeRepository {
-  HomeRepository({Dio? dio})
-      : _dio = dio ?? Dio(BaseOptions(baseUrl: ApiConfig.baseUrl));
-
-  final Dio _dio;
-
   Future<List<ProductModel>> getFeaturedProducts() async {
-    final response = await _dio.get('/home/featured');
-    final items = _extractList(response.data);
-    return items.map(ProductModel.fromJson).toList();
+    await Future.delayed(const Duration(milliseconds: 500));
+    return [
+      ProductModel(
+        productId: '1',
+        name: 'Featured Laptop',
+        shortDescription: 'High performance laptop',
+        basePrice: 999.99,
+        categoryId: 'laptops',
+        brandId: 'brand1',
+        thumbnailUrl: '',
+        isFeatured: true,
+        isDeal: false,
+        dealPrice: null,
+        isActive: true,
+      ),
+    ];
   }
 
   Future<List<ProductModel>> getDeals() async {
-    final response = await _dio.get('/home/deals');
-    final items = _extractList(response.data);
-    return items.map(ProductModel.fromJson).toList();
+    await Future.delayed(const Duration(milliseconds: 500));
+    return [
+      ProductModel(
+        productId: '2',
+        name: 'Deal Monitor',
+        shortDescription: 'Great monitor deal',
+        basePrice: 299.99,
+        categoryId: 'monitors',
+        brandId: 'brand2',
+        thumbnailUrl: '',
+        isFeatured: false,
+        isDeal: true,
+        dealPrice: 199.99,
+        isActive: true,
+      ),
+    ];
   }
 
   Future<List<PromotionModel>> getActivePromotions() async {
-    final response = await _dio.get('/home/promotions');
-    final items = _extractList(response.data);
-    return items.map(PromotionModel.fromJson).toList();
-  }
-
-  List<Map<String, dynamic>> _extractList(dynamic data) {
-    if (data is List) {
-      return data.cast<Map<String, dynamic>>();
-    }
-    if (data is Map<String, dynamic> && data['data'] is List) {
-      return (data['data'] as List).cast<Map<String, dynamic>>();
-    }
-    return const [];
+    await Future.delayed(const Duration(milliseconds: 500));
+    return [
+      PromotionModel(
+        promotionId: '1',
+        title: 'Summer Sale',
+        description: 'Get 20% off selected items',
+        promoType: 'discount',
+        bannerUrl: '',
+        isActive: true,
+        startDate: DateTime.now().toIso8601String(),
+        endDate: DateTime.now().add(const Duration(days: 30)).toIso8601String(),
+      ),
+    ];
   }
 }

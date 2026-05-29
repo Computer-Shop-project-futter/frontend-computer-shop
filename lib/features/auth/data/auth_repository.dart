@@ -1,6 +1,3 @@
-import 'package:dio/dio.dart';
-
-import '../../../core/config/api_config.dart';
 import '../domain/user_model.dart';
 
 class AuthResult {
@@ -11,22 +8,32 @@ class AuthResult {
 }
 
 class AuthRepository {
-  AuthRepository({Dio? dio})
-      : _dio = dio ?? Dio(BaseOptions(baseUrl: ApiConfig.baseUrl));
-
-  final Dio _dio;
+  final _mockUsers = <String, String>{}; // email -> password
 
   Future<AuthResult> login(String email, String password) async {
-    final response = await _dio.post('/auth/login', data: {
-      'email': email,
-      'password': password,
-    });
+    await Future.delayed(const Duration(milliseconds: 800));
 
-    final data = _extractMap(response.data);
-    final token = _extractToken(data);
-    final userMap = _extractMap(data['user']);
-    final user = UserModel.fromJson(userMap.isNotEmpty ? userMap : data);
-    return AuthResult(user: user, token: token);
+    if (!_mockUsers.containsKey(email)) {
+      throw Exception('User not found');
+    }
+
+    if (_mockUsers[email] != password) {
+      throw Exception('Invalid password');
+    }
+
+    return AuthResult(
+      user: UserModel(
+        userId: '123',
+        roleId: 'user',
+        fullName: email.split('@').first,
+        email: email,
+        phone: '+1234567890',
+        avatarUrl: null,
+        createdAt: DateTime.now().toIso8601String(),
+        isActive: true,
+      ),
+      token: 'mock_token_${DateTime.now().millisecondsSinceEpoch}',
+    );
   }
 
   Future<AuthResult> register(
@@ -35,45 +42,40 @@ class AuthRepository {
     String phone,
     String password,
   ) async {
-    final response = await _dio.post('/auth/register', data: {
-      'fullName': fullName,
-      'email': email,
-      'phone': phone,
-      'password': password,
-    });
+    await Future.delayed(const Duration(milliseconds: 800));
 
-    final data = _extractMap(response.data);
-    final token = _extractToken(data);
-    final userMap = _extractMap(data['user']);
-    final user = UserModel.fromJson(userMap.isNotEmpty ? userMap : data);
-    return AuthResult(user: user, token: token);
+    if (_mockUsers.containsKey(email)) {
+      throw Exception('Email already registered');
+    }
+
+    _mockUsers[email] = password;
+
+    return AuthResult(
+      user: UserModel(
+        userId: '123',
+        roleId: 'user',
+        fullName: fullName,
+        email: email,
+        phone: phone,
+        avatarUrl: null,
+        createdAt: DateTime.now().toIso8601String(),
+        isActive: true,
+      ),
+      token: 'mock_token_${DateTime.now().millisecondsSinceEpoch}',
+    );
   }
 
   Future<UserModel?> fetchProfile(String token) async {
-    final response = await _dio.get(
-      '/auth/me',
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    await Future.delayed(const Duration(milliseconds: 500));
+    return UserModel(
+      userId: '123',
+      roleId: 'user',
+      fullName: 'Mock User',
+      email: 'user@example.com',
+      phone: '+1234567890',
+      avatarUrl: null,
+      createdAt: DateTime.now().toIso8601String(),
+      isActive: true,
     );
-    final data = _extractMap(response.data);
-    if (data.isEmpty) return null;
-    return UserModel.fromJson(data);
-  }
-
-  Map<String, dynamic> _extractMap(dynamic data) {
-    if (data is Map<String, dynamic>) {
-      if (data['data'] is Map<String, dynamic>) {
-        return data['data'] as Map<String, dynamic>;
-      }
-      return data;
-    }
-    return const {};
-  }
-
-  String? _extractToken(Map<String, dynamic> data) {
-    final direct = data['token'];
-    if (direct is String && direct.isNotEmpty) return direct;
-    final nested = data['accessToken'];
-    if (nested is String && nested.isNotEmpty) return nested;
-    return null;
   }
 }

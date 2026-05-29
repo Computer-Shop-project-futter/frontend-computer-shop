@@ -1,6 +1,3 @@
-import 'package:dio/dio.dart';
-
-import '../../core/config/api_config.dart';
 import '../domain/product_benchmark_model.dart';
 import '../domain/product_config_option_model.dart';
 import '../domain/product_model.dart';
@@ -149,102 +146,63 @@ class ProductDetailPayload {
 }
 
 class ProductsRepository {
-	ProductsRepository({Dio? dio})
-			: _dio = dio ?? Dio(BaseOptions(baseUrl: ApiConfig.baseUrl));
-
-	final Dio _dio;
-
 	Future<PaginatedProducts> getProducts(ProductFilters filters, {int page = 1}) async {
-		final response = await _dio.get(
-			'/products',
-			queryParameters: filters.toQueryParameters(page: page),
-		);
-
-		final data = response.data;
-		final items = _extractList(data).map(ProductModel.fromJson).toList();
-		final pageValue = _extractInt(data, 'page') ?? page;
-		final hasMore = _extractBool(data, 'hasMore') ?? false;
+		await Future.delayed(const Duration(milliseconds: 800));
 		return PaginatedProducts(
-			items: items,
-			page: pageValue,
-			hasMore: hasMore,
+			items: [
+				ProductModel(
+					productId: '1',
+					name: 'Gaming Laptop',
+					shortDescription: 'High performance gaming laptop',
+					basePrice: 1299.99,
+					categoryId: 'laptops',
+					brandId: 'brand1',
+					thumbnailUrl: '',
+					isFeatured: true,
+					isDeal: false,
+					dealPrice: null,
+					isActive: true,
+				),
+				ProductModel(
+					productId: '2',
+					name: 'Mechanical Keyboard',
+					shortDescription: 'RGB Mechanical Keyboard',
+					basePrice: 199.99,
+					categoryId: 'peripherals',
+					brandId: 'brand2',
+					thumbnailUrl: '',
+					isFeatured: false,
+					isDeal: true,
+					dealPrice: 149.99,
+					isActive: true,
+				),
+			],
+			page: page,
+			hasMore: false,
 		);
 	}
 
 	Future<ProductDetailPayload> getProductById(String productId) async {
-		final response = await _dio.get('/products/$productId');
-		final data = _extractMap(response.data);
-		final productMap = _extractMap(data['product']);
-		final product = ProductModel.fromJson(
-			productMap.isNotEmpty ? productMap : data,
-		);
-		final specs = _extractList(data['specs'])
-				.map(ProductSpecModel.fromJson)
-				.toList();
-		final benchmarks = _extractList(data['benchmarks'])
-				.map(ProductBenchmarkModel.fromJson)
-				.toList();
-		final configOptions = _extractList(data['configOptions'])
-				.map(ProductConfigOptionModel.fromJson)
-				.toList();
-		final media = _extractList(data['media'])
-				.map(ProductMediaItem.fromJson)
-				.toList();
-		final reviews = _extractList(data['reviews'])
-				.map(ReviewModel.fromJson)
-				.toList();
-
+		await Future.delayed(const Duration(milliseconds: 800));
 		return ProductDetailPayload(
-			product: product,
-			specs: specs,
-			benchmarks: benchmarks,
-			configOptions: configOptions,
-			media: media,
-			reviews: reviews,
+			product: ProductModel(
+				productId: productId,
+				name: 'Sample Product',
+				shortDescription: 'This is a sample product',
+				basePrice: 99.99,
+				categoryId: 'category1',
+				brandId: 'brand1',
+				thumbnailUrl: '',
+				isFeatured: false,
+				isDeal: false,
+				dealPrice: null,
+				isActive: true,
+			),
+			specs: [],
+			benchmarks: [],
+			configOptions: [],
+			media: [],
+			reviews: [],
 		);
-	}
-
-	List<Map<String, dynamic>> _extractList(dynamic data) {
-		if (data is List) {
-			return data.cast<Map<String, dynamic>>();
-		}
-		if (data is Map<String, dynamic> && data['data'] is List) {
-			return (data['data'] as List).cast<Map<String, dynamic>>();
-		}
-		return const [];
-	}
-
-	Map<String, dynamic> _extractMap(dynamic data) {
-		if (data is Map<String, dynamic>) {
-			if (data['data'] is Map<String, dynamic>) {
-				return data['data'] as Map<String, dynamic>;
-			}
-			return data;
-		}
-		return const {};
-	}
-
-	int? _extractInt(dynamic data, String key) {
-		if (data is Map<String, dynamic> && data[key] is num) {
-			return (data[key] as num).toInt();
-		}
-		if (data is Map<String, dynamic> && data['meta'] is Map) {
-			final meta = data['meta'] as Map;
-			final value = meta[key];
-			if (value is num) return value.toInt();
-		}
-		return null;
-	}
-
-	bool? _extractBool(dynamic data, String key) {
-		if (data is Map<String, dynamic> && data[key] is bool) {
-			return data[key] as bool;
-		}
-		if (data is Map<String, dynamic> && data['meta'] is Map) {
-			final meta = data['meta'] as Map;
-			final value = meta[key];
-			if (value is bool) return value;
-		}
-		return null;
 	}
 }

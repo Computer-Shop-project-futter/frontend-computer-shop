@@ -57,7 +57,7 @@ dependencies:
   # UI
   shimmer: ^3.0.0
   fl_chart: ^0.67.0          # Benchmark charts
-  carousel_slider: ^4.2.1    # Product media gallery
+  carousel_slider: ^5.1.1    # Product media gallery
   video_player: ^2.9.2
 
   # Auth

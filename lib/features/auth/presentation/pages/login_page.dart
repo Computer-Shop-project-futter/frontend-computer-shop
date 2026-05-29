@@ -18,6 +18,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   bool _obscurePassword = true;
 
   @override
+  void initState() {
+    super.initState();
+
+    ref.listenManual<AuthState>(authProvider, (previous, next) {
+      if (next.status == AuthStatus.authenticated) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context.go('/home');
+        });
+      }
+
+      if (next.status == AuthStatus.error) {
+        final msg = next.message ?? 'Login failed.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(msg)));
+
+        ref.read(authProvider.notifier).clearError();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -28,19 +49,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final authState = ref.watch(authProvider);
-
-    ref.listen<AuthState>(authProvider, (previous, next) {
-      if (previous?.status == next.status) return;
-      if (next.status == AuthStatus.authenticated) {
-        context.go('/home');
-      } else if (next.status == AuthStatus.error) {
-        final msg = next.message ?? 'Login failed.';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg)),
-        );
-        ref.read(authProvider.notifier).clearError();
-      }
-    });
 
     return Scaffold(
       body: Container(
