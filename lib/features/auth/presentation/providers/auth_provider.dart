@@ -1,8 +1,9 @@
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/auth_repository.dart';
 import '../../domain/user_model.dart';
+import '../../data/auth_repository_hybrid.dart';
 
 enum AuthStatus {
   loading,
@@ -33,9 +34,10 @@ class AuthState {
       : this(status: AuthStatus.error, message: message);
 }
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepository();
+final authRepositoryProvider = Provider<AuthRepositoryHybrid>((ref) {
+  return AuthRepositoryHybrid();
 });
+
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final repository = ref.read(authRepositoryProvider);
@@ -45,7 +47,7 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier(this._repository) : super(const AuthState.unauthenticated());
 
-  final AuthRepository _repository;
+  final AuthRepositoryHybrid _repository;
 
   Future<void> login(String email, String password) async {
     state = const AuthState.loading();
@@ -56,7 +58,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       }
       state = AuthState.authenticated(result.user);
     } catch (error) {
-      state = AuthState.error('Login failed. Please try again.');
+      final message = error is Exception ? error.toString().replaceFirst('Exception: ', '') : error.toString();
+      state = AuthState.error(message);
     }
   }
 
@@ -65,16 +68,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
     String email,
     String phone,
     String password,
+    String roleId,
   ) async {
     state = const AuthState.loading();
     try {
-      final result = await _repository.register(fullName, email, phone, password);
+      final result = await _repository.register(
+        fullName,
+        email,
+        phone,
+        password,
+        roleId,
+      );
       if (result.token != null) {
         await _saveToken(result.token!);
       }
       state = AuthState.authenticated(result.user);
     } catch (error) {
-      state = AuthState.error('Registration failed. Please try again.');
+      final message = error is Exception ? error.toString().replaceFirst('Exception: ', '') : error.toString();
+      state = AuthState.error(message);
     }
   }
 

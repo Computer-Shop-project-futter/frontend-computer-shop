@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:computer_shop/home/presentation/widgets/deals_section.dart';
-import 'package:computer_shop/home/presentation/widgets/featured_rigs_section.dart';
-import 'package:computer_shop/home/presentation/widgets/hero_banner.dart';
-import 'package:computer_shop/products/domain/product_model.dart';
+import 'package:computer_shop/features/home/widgets/deals_section.dart';
+import 'package:computer_shop/features/home/widgets/featured_rigs_section.dart';
+import 'package:computer_shop/features/home/widgets/hero_banner.dart';
+import 'package:computer_shop/features/products/domain/product_model.dart';
 
 void main() {
   setUpAll(() {

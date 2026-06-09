@@ -18,6 +18,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 	final _phoneController = TextEditingController();
 	final _passwordController = TextEditingController();
 	final _confirmController = TextEditingController();
+	String _selectedRole = 'customer';
 	bool _obscurePassword = true;
 	bool _obscureConfirm = true;
 
@@ -28,7 +29,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 		ref.listenManual<AuthState>(authProvider, (previous, next) {
 			if (next.status == AuthStatus.authenticated) {
 				WidgetsBinding.instance.addPostFrameCallback((_) {
-					context.go('/login');
+					context.go('/home');
 				});
 			}
 
@@ -129,6 +130,35 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 												),
 											),
 											const SizedBox(height: 18),
+												const Align(
+												  alignment: Alignment.centerLeft,
+												  child: Text(
+												    'Select Role',
+												    style: TextStyle(
+												      fontSize: 12,
+												      fontWeight: FontWeight.w600,
+												      color: Color(0xFF1A1917),
+												    ),
+												  ),
+												),
+												const SizedBox(height: 8),
+												Wrap(
+												  spacing: 10,
+												  runSpacing: 10,
+												  children: [
+												    _RoleChoiceChip(
+												      label: 'Customer',
+												      selected: _selectedRole == 'customer',
+												      onTap: () => setState(() => _selectedRole = 'customer'),
+												    ),
+												    _RoleChoiceChip(
+												      label: 'Staff',
+												      selected: _selectedRole == 'staff',
+												      onTap: () => setState(() => _selectedRole = 'staff'),
+												    ),
+												  ],
+												),
+												const SizedBox(height: 18),
 											Container(
 												padding: const EdgeInsets.symmetric(
 													horizontal: 16,
@@ -250,6 +280,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 																		_emailController.text.trim(),
 																		_phoneController.text.trim(),
 																		_passwordController.text,
+																		_selectedRole,
 																	);
 																},
 															style: ElevatedButton.styleFrom(
@@ -313,6 +344,37 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 					),
 				),
 			),
+		);
+	}
+}
+
+
+class _RoleChoiceChip extends StatelessWidget {
+	final String label;
+	final bool selected;
+	final VoidCallback onTap;
+
+	const _RoleChoiceChip({
+		required this.label,
+		required this.selected,
+		required this.onTap,
+	});
+
+	@override
+	Widget build(BuildContext context) {
+		return ChoiceChip(
+			selected: selected,
+			onSelected: (_) => onTap(),
+			label: Text(label),
+			labelStyle: TextStyle(
+				color: selected ? Colors.white : const Color(0xFF0D1B3D),
+				fontWeight: FontWeight.w600,
+				fontSize: 12,
+			),
+			selectedColor: const Color(0xFF2A66FF),
+			backgroundColor: const Color(0xFFF2F6FF),
+			side: const BorderSide(color: Color(0xFFD7E4FF)),
+			shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
 		);
 	}
 }

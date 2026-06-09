@@ -41,6 +41,7 @@ class AuthRepository {
     String email,
     String phone,
     String password,
+    String roleId,
   ) async {
     await Future.delayed(const Duration(milliseconds: 800));
 
@@ -53,7 +54,7 @@ class AuthRepository {
     return AuthResult(
       user: UserModel(
         userId: '123',
-        roleId: 'user',
+        roleId: roleId,
         fullName: fullName,
         email: email,
         phone: phone,

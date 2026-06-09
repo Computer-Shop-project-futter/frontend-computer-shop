@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:computer_shop/home/data/home_repository.dart';
 import 'package:computer_shop/home/domain/promotion_model.dart';
 import 'package:computer_shop/home/presentation/providers/home_provider.dart';
-import 'package:computer_shop/products/domain/product_model.dart';
+import 'package:computer_shop/features/products/domain/product_model.dart';
 
 class FakeHomeRepository extends HomeRepository {
   FakeHomeRepository({

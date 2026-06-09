@@ -30,8 +30,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
       if (next.status == AuthStatus.error) {
         final msg = next.message ?? 'Login failed.';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(msg)));
 
         ref.read(authProvider.notifier).clearError();
       }
@@ -58,11 +59,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFEAF2FF),
-              Color(0xFFF7FAFF),
-              Colors.white,
-            ],
+            colors: [Color(0xFFEAF2FF), Color(0xFFF7FAFF), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -179,7 +176,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               onPressed: authState.status == AuthStatus.loading
                                   ? null
                                   : () {
-                                      ref.read(authProvider.notifier).login(
+                                      ref
+                                          .read(authProvider.notifier)
+                                          .login(
                                             _emailController.text.trim(),
                                             _passwordController.text,
                                           );
@@ -212,30 +211,65 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 ],
                               ),
                             ),
+                            const SizedBox(height: 16),
+                            const _DividerLabel(text: 'Or login with'),
+                            const SizedBox(height: 12),
+                            _SocialAuthButton(
+                              label: 'Continue with Google',
+                              icon: Icons.g_mobiledata,
+                              onTap: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Google sign-in coming soon.',
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            _SocialAuthButton(
+                              label: 'Continue with Gmail',
+                              icon: Icons.mail_outline_rounded,
+                              onTap: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Gmail sign-in coming soon.'),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            _SocialAuthButton(
+                              label: 'Continue with Facebook',
+                              icon: Icons.facebook,
+                              onTap: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Facebook sign-in coming soon.',
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            _SocialAuthButton(
+                              label: 'Continue with TikTok',
+                              icon: Icons.music_note_rounded,
+                              onTap: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'TikTok sign-in coming soon.',
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Or login with',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF7C8AA6),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Google sign-in coming soon.'),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.g_mobiledata),
-                        label: const Text('Continue with Google'),
-                      ),
-                      const SizedBox(height: 18),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -267,6 +301,72 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SocialAuthButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _SocialAuthButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: onTap,
+        icon: Icon(icon, color: const Color(0xFF2A66FF)),
+        label: Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFF0D1B3D),
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Color(0xFFD7E4FF)),
+          backgroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DividerLabel extends StatelessWidget {
+  final String text;
+
+  const _DividerLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: Colors.grey.shade300, height: 1)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 11,
+              color: Color(0xFF7C8AA6),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        Expanded(child: Divider(color: Colors.grey.shade300, height: 1)),
+      ],
     );
   }
 }
