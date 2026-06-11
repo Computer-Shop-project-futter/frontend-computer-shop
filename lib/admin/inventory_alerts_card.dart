@@ -3,9 +3,9 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
-import '../../data/app_data.dart';
-import '../../data/app_theme.dart';
-import '../../models/models.dart';
+import 'data/app_data.dart';
+import 'data/app_theme.dart';
+import '../admin/models/models.dart';
 import 'widgets/dashboard/section_card.dart';
 
 class InventoryAlertsCard extends StatelessWidget {

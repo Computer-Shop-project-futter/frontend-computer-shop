@@ -3,8 +3,8 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
-import '../../../models/component_image_title.dart';
-import '../../../models/models.dart';
+import '../../models/component_image_title.dart';
+import '../../models/models.dart';
 
 
 class ComponentCard extends StatelessWidget {

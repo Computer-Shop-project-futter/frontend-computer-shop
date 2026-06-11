@@ -2,7 +2,7 @@
 //  G14 Admin — Theme & Constants
 // ─────────────────────────────────────────────
 
-import 'package:computer_shop/models/models.dart';
+import 'package:computer_shop/admin/models/models.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {

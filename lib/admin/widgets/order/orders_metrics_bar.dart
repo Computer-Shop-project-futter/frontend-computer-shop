@@ -4,8 +4,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../data/app_data.dart';
-import '../../../data/app_theme.dart';
+import '../../data/app_data.dart';
+import '../../data/app_theme.dart';
 
 
 class OrdersMetricsBar extends StatelessWidget {

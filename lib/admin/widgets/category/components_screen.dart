@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
-import '../../../models/models.dart';
+import '../../models/models.dart';
 import 'card_component.dart';
 import 'add_edit_component_page.dart';
 

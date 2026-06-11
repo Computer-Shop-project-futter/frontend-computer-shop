@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../data/app_theme.dart';
+import '../../data/app_theme.dart';
 
 
 class SectionCard extends StatelessWidget {

@@ -3,8 +3,8 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
-import '../data/app_data.dart';
-import '../data/app_theme.dart';
+import 'data/app_data.dart';
+import 'data/app_theme.dart';
 import 'widgets/category/components_screen.dart';
 import 'widgets/dashboard/dashboard_screen.dart';
 import 'widgets/order/orders_screen.dart';

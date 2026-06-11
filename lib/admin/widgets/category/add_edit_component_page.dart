@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
-import '../../../models/models.dart';
+import '../../models/models.dart';
 
 class AddEditComponentPage extends StatefulWidget {
   final ComponentItem? existing;
