@@ -253,7 +253,7 @@ class CouponList extends StatelessWidget {
   final ValueChanged<CouponModel> onToggle;
   final ValueChanged<CouponModel> onDelete;
 
-  const CouponList({
+  const CouponList({super.key, 
     required this.coupons, required this.selectedId,
     required this.onSelect, required this.onToggle, required this.onDelete,
   });
@@ -321,7 +321,7 @@ class CouponCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  const CouponCard({
+  const CouponCard({super.key, 
     required this.coupon, required this.isSelected,
     required this.onTap, required this.onToggle,
     required this.onEdit, required this.onDelete,

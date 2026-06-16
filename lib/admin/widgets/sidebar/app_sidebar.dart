@@ -100,7 +100,7 @@ class _BrandHeader extends StatelessWidget {
 
 class _G14Badge extends StatelessWidget {
   final double fontSize;
-  const _G14Badge({this.fontSize = 11});
+  const _G14Badge();
 
   @override
   Widget build(BuildContext context) {
