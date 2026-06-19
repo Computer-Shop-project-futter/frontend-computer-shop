@@ -1,11 +1,8 @@
 // lib/features/builder/presentation/pages/build_editor_page.dart
 
 import 'package:computer_shop/client/features/pc_builder/domain/builder_model.dart';
-import 'package:computer_shop/client/features/shared/header/app_main_header.dart';
-import 'package:computer_shop/client/features/shared/widgets/navigation/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../providers/builder_provider.dart';
 import '../widgets/component_selector.dart';
@@ -25,7 +22,7 @@ class _BuildEditorPageState extends ConsumerState<BuildEditorPage> {
     final notifier = ref.read(builderProvider.notifier);
 
     if (build == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Center(child: CircularProgressIndicator());
     }
 
     // If selecting a component, show the selector
@@ -41,152 +38,109 @@ class _BuildEditorPageState extends ConsumerState<BuildEditorPage> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      drawer: const AppDrawer(),
-      body: Column(
-        children: [
-          AppMainHeader(
-            dark: true,
-            showBack: true,
-            onBackPressed: () => Navigator.pop(context),
-            actions: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(999),
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Build Name
+                _BuildNameField(
+                  initialName: build.name,
+                  onChanged: notifier.updateBuildName,
                 ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () async {
-                      await notifier.saveCurrentBuild();
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Build saved!'),
-                            backgroundColor: Color(0xFF2A66FF),
-                          ),
-                        );
-                        context.pop();
-                      }
-                    },
-                    borderRadius: BorderRadius.circular(999),
-                    child: const Icon(
-                      Icons.save_rounded,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                const SizedBox(height: 20),
+
+                // Components Grid
+                const Text(
+                  'PRECISION ENGINEERING SYSTEM',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                    color: Color(0xFF6B7891),
                   ),
                 ),
-              ),
-            ],
-          ),
-
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Build Name
-                  _BuildNameField(
-                    initialName: build.name,
-                    onChanged: notifier.updateBuildName,
+                const SizedBox(height: 8),
+                Text(
+                  build.name.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF10213B),
                   ),
-                  const SizedBox(height: 20),
+                ),
+                const SizedBox(height: 20),
 
-                  // Components Grid
-                  const Text(
-                    'PRECISION ENGINEERING SYSTEM',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.2,
-                      color: Color(0xFF6B7891),
-                    ),
+                // Component Cards
+                _ComponentCard(
+                  label: 'CPU',
+                  component: build.cpu,
+                  onTap: () => notifier.startComponentSelection(ComponentType.cpu),
+                ),
+                const SizedBox(height: 12),
+
+                _ComponentCard(
+                  label: 'GPU',
+                  component: build.gpu,
+                  onTap: () => notifier.startComponentSelection(ComponentType.gpu),
+                ),
+                const SizedBox(height: 12),
+
+                _ComponentCard(
+                  label: 'Motherboard',
+                  component: build.motherboard,
+                  onTap: () => notifier.startComponentSelection(ComponentType.motherboard),
+                  isTapToConfigure: true,
+                ),
+                const SizedBox(height: 12),
+
+                _ComponentCard(
+                  label: 'RAM',
+                  component: build.ram,
+                  onTap: () => notifier.startComponentSelection(ComponentType.ram),
+                  isTapToConfigure: true,
+                ),
+                const SizedBox(height: 12),
+
+                _ComponentCard(
+                  label: 'Storage',
+                  component: build.storage,
+                  onTap: () => notifier.startComponentSelection(ComponentType.storage),
+                ),
+                const SizedBox(height: 20),
+
+                // System Note (Compatibility Warning)
+                if (_hasCompatibilityWarning(build))
+                  _SystemNote(
+                    message: 'Selected motherboard may require a BIOS update for this CPU. '
+                        'Ensure you have a compatible flash drive or an older processor for the update process.',
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    build.name.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF10213B),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                  // Component Cards
-                  _ComponentCard(
-                    label: 'CPU',
-                    component: build.cpu,
-                    onTap: () => notifier.startComponentSelection(ComponentType.cpu),
-                  ),
-                  const SizedBox(height: 12),
+                // Engineering Standards Section
+                const _EngineeringStandards(),
+                const SizedBox(height: 24),
 
-                  _ComponentCard(
-                    label: 'GPU',
-                    component: build.gpu,
-                    onTap: () => notifier.startComponentSelection(ComponentType.gpu),
-                  ),
-                  const SizedBox(height: 12),
-
-                  _ComponentCard(
-                    label: 'Motherboard',
-                    component: build.motherboard,
-                    onTap: () => notifier.startComponentSelection(ComponentType.motherboard),
-                    isTapToConfigure: true,
-                  ),
-                  const SizedBox(height: 12),
-
-                  _ComponentCard(
-                    label: 'RAM',
-                    component: build.ram,
-                    onTap: () => notifier.startComponentSelection(ComponentType.ram),
-                    isTapToConfigure: true,
-                  ),
-                  const SizedBox(height: 12),
-
-                  _ComponentCard(
-                    label: 'Storage',
-                    component: build.storage,
-                    onTap: () => notifier.startComponentSelection(ComponentType.storage),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // System Note (Compatibility Warning)
-                  if (_hasCompatibilityWarning(build))
-                    _SystemNote(
-                      message: 'Selected motherboard may require a BIOS update for this CPU. '
-                          'Ensure you have a compatible flash drive or an older processor for the update process.',
-                    ),
-                  const SizedBox(height: 20),
-
-                  // Engineering Standards Section
-                  const _EngineeringStandards(),
-                  const SizedBox(height: 24),
-
-                  // Bottom Bar with Total and Add to Cart
-                  _BottomBar(
-                    total: build.totalPrice,
-                    onAddToCart: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Build added to cart!'),
-                          backgroundColor: Color(0xFF2A66FF),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                // Bottom Bar with Total and Add to Cart
+                _BottomBar(
+                  total: build.totalPrice,
+                  onAddToCart: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Build added to cart!'),
+                        backgroundColor: Color(0xFF2A66FF),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

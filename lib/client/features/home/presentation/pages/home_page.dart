@@ -1,6 +1,3 @@
-import 'package:computer_shop/client/features/shared/footer/app_footer.dart';
-import 'package:computer_shop/client/features/shared/header/app_main_header.dart';
-import 'package:computer_shop/client/features/shared/widgets/navigation/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,42 +13,29 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeProvider);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F5FB),
-      drawer: const AppDrawer(),
-      body: SafeArea(
-        child: homeState.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, _) => Center(
-            child: Text(
-              'Failed: $err',
-              style: const TextStyle(color: Color(0xFF10213B)),
-            ),
-          ),
-          data: (state) {
-            final featuredProduct = state.featuredProducts.isNotEmpty
-                ? state.featuredProducts.first
-                : null;
-            final featuredDeal = state.deals.isNotEmpty
-                ? state.deals.first
-                : null;
-            final promotion = state.promotions.isNotEmpty
-                ? state.promotions.first
-                : null;
+    return homeState.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Center(
+        child: Text(
+          'Failed: $err',
+          style: const TextStyle(color: Color(0xFF10213B)),
+        ),
+      ),
+      data: (state) {
+        final featuredProduct = state.featuredProducts.isNotEmpty
+            ? state.featuredProducts.first
+            : null;
+        final featuredDeal = state.deals.isNotEmpty
+            ? state.deals.first
+            : null;
+        final promotion = state.promotions.isNotEmpty
+            ? state.promotions.first
+            : null;
 
-            return ListView(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-              children: [
-                AppMainHeader(
-                  dark: true,
-                  showSearch: true,
-                  showFavorites: true,
-                  showCart: true,
-                  onSearchPressed: () => context.go('/products'),
-                  onCartPressed: () => context.go('/cart'),
-                  onFavoritesPressed: () => context.go('/wishlist'),
-                ),
-                const SizedBox(height: 16),
+        return ListView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+          children: [
+            const SizedBox(height: 16),
                 _HeroFeatureCard(
                   product: featuredProduct,
                   promotion: promotion,
@@ -151,22 +135,10 @@ class HomePage extends ConsumerWidget {
                   promotion: promotion,
                   onTap: () => context.go('/products'),
                 ),
-                const SizedBox(height: 18),
-              ],
-            );
-          },
-        ),
-      ),
-      bottomNavigationBar: AppNavigationFooter(
-        currentIndex: 0,
-        onTabSelected: (index) {
-          if (index == 0) {
-            context.go('/home');
-          } else if (index == 1) {
-            context.go('/products');
-          }
-        },
-      ),
+            const SizedBox(height: 18),
+          ],
+        );
+      },
     );
   }
 }

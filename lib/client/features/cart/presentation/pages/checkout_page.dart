@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/checkout_provider.dart';
-import '../../../shared/header/app_main_header.dart';
-import '../../../shared/widgets/navigation/app_drawer.dart';
 
 class CheckoutPage extends ConsumerStatefulWidget {
   const CheckoutPage({super.key});
@@ -23,22 +21,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final checkoutState = ref.watch(checkoutProvider);
     final notifier = ref.read(checkoutProvider.notifier);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      drawer: const AppDrawer(),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            AppMainHeader(
-              dark: false,
-              title: 'Checkout',
-              showBack: true,
-              onBackPressed: () => Navigator.of(context).maybePop(),
-            ),
-
-            // Main Content
-            Expanded(
+    return Column(
+      children: [
+        Expanded(
               child: checkoutState.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : SingleChildScrollView(
@@ -119,10 +104,8 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                         ),
                       ),
                     ),
-            ),
-          ],
         ),
-      ),
+      ],
     );
   }
 }

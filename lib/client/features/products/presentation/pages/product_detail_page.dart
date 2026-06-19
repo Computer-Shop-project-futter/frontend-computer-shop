@@ -9,9 +9,6 @@ import '../../domain/product_model.dart';
 import '../../domain/product_spec_model.dart';
 import '../../data/products_repository.dart';
 import '../providers/products_provider.dart';
-import '../../../shared/footer/app_footer.dart';
-import '../../../shared/header/app_main_header.dart';
-import '../../../shared/widgets/navigation/app_drawer.dart';
 import 'package:computer_shop/client/features/cart/domain/checkout_model.dart';
 import 'package:computer_shop/client/features/cart/presentation/providers/checkout_provider.dart';
 import '../widgets/benchmarks_tab.dart';
@@ -100,273 +97,211 @@ class ProductDetailPage extends ConsumerWidget {
       });
     });
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      drawer: const AppDrawer(),
-      body: Column(
-        children: [
-          AppMainHeader(
-            dark: true,
-            showBack: true,
-            onBackPressed: () => Navigator.pop(context),
-            actions: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {},
-                    borderRadius: BorderRadius.circular(999),
-                    child: const Icon(
-                      Icons.favorite_border_rounded,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+    return Column(
+      children: [
+        if (selectedCompareIds.isNotEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                bottom: BorderSide(color: Colors.grey.shade200, width: 1),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'COMPARE PRODUCTS',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF6B7891),
+                    letterSpacing: 1.1,
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {},
-                    borderRadius: BorderRadius.circular(999),
-                    child: const Icon(
-                      Icons.share_outlined,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          if (selectedCompareIds.isNotEmpty)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade200, width: 1),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'COMPARE PRODUCTS',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF6B7891),
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 70,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: selectedCompareIds.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        final id = selectedCompareIds[index];
-                        final isSelected = id == productId;
-                        return GestureDetector(
-                           onTap: () {
-                             context.pushReplacement('/products/$id');
-                           },
-                          child: Container(
-                            width: 70,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 70,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: selectedCompareIds.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      final id = selectedCompareIds[index];
+                      final isSelected = id == productId;
+                      return GestureDetector(
+                        onTap: () {
+                          context.pushReplacement('/products/$id');
+                        },
+                        child: Container(
+                          width: 70,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFF2A66FF)
+                                  : Colors.grey.shade300,
+                              width: isSelected ? 2 : 1,
+                            ),
+                            color: isSelected
+                                ? const Color(0xFFEAF1FF)
+                                : Colors.white,
+                          ),
+                          child: Center(
+                            child: Text(
+                              'PC ${index + 1}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
                                 color: isSelected
                                     ? const Color(0xFF2A66FF)
-                                    : Colors.grey.shade300,
-                                width: isSelected ? 2 : 1,
-                              ),
-                              color: isSelected
-                                  ? const Color(0xFFEAF1FF)
-                                  : Colors.white,
-                            ),
-                            child: Center(
-                              child: Text(
-                                'PC ${index + 1}',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: isSelected
-                                      ? const Color(0xFF2A66FF)
-                                      : const Color(0xFF6B7891),
-                                ),
+                                    : const Color(0xFF6B7891),
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
                   ),
+                ),
+              ],
+            ),
+          ),
+        Expanded(
+          child: detailState.when(
+            loading: () => const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Loading product details...'),
                 ],
               ),
             ),
-          Expanded(
-            child: detailState.when(
-              loading: () => const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Loading product details...'),
-                  ],
-                ),
-              ),
-              error: (err, stack) {
-                print('Product Detail Error: $err');
-                print('Stack: $stack');
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.error, color: Colors.red, size: 48),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Error loading product',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          err.toString(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Go Back'),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              data: (payload) {
-                final selectedOptions = ref.watch(
-                  productDetailSelectionProvider(productId),
-                );
-                final defaultOptions = {
-                  for (final option in payload.configOptions)
-                    if (option.isDefault) option.optionGroup: option,
-                };
-                final state = ProductDetailState(
-                  payload: payload,
-                  selectedOptions: {...defaultOptions, ...selectedOptions},
-                );
-                return DefaultTabController(
-                  length: 3,
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            error: (err, stack) {
+              print('Product Detail Error: $err');
+              print('Stack: $stack');
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _DetailHeroCard(
-                        state: state,
-                        onSelectOption: (option) {
-                          ref
-                              .read(
-                                productDetailSelectionProvider(
-                                  productId,
-                                ).notifier,
-                              )
-                              .selectOption(option);
-                        },
-                        onAddToCart: () {
-                          final notifier = ref.read(checkoutProvider.notifier);
-                          final product = payload.product;
-                          final price = product.dealPrice ?? product.basePrice;
-                          notifier.addItem(OrderItem(
-                            id: product.productId,
-                            name: product.name,
-                            type: 'PRODUCT',
-                            variant: '',
-                            quantity: 1,
-                            price: price,
-                            imageUrl: product.thumbnailUrl,
-                          ));
-                          context.go('/checkout');
-                        },
-                        onAddToWishlist: () {},
-                        onCompare: () {
-                          // toggle current product into compare list then open compare
-                          ref.read(compareProvider.notifier).toggle(productId);
-                          final ids = ref.read(compareProvider).join(',');
-                          context.go('/product/compare${ids.isNotEmpty ? '?ids=$ids' : ''}');
-                        },
+                      const Icon(Icons.error, color: Colors.red, size: 48),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Error loading product',
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      const SizedBox(height: 14),
-                      _SectionHeader(
-                        title: 'PERFORMANCE',
-                        subtitle: 'Quick snapshot of the build',
+                      const SizedBox(height: 8),
+                      Text(
+                        err.toString(),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.grey),
                       ),
-                      const SizedBox(height: 10),
-                      _PerformanceCard(benchmarks: state.benchmarks),
-                      const SizedBox(height: 14),
-                      _SectionHeader(
-                        title: 'SPECIFICATIONS',
-                        subtitle: 'Hardware details',
-                      ),
-                      const SizedBox(height: 10),
-                      _SpecsCard(specs: state.specs),
-                      const SizedBox(height: 14),
-                      _SectionHeader(
-                        title: 'REVIEWS',
-                        subtitle: '${state.reviews.length} customer reviews',
-                      ),
-                      const SizedBox(height: 10),
-                      _ReviewsPreview(reviews: state.reviews),
-                      const SizedBox(height: 14),
-                      _SectionHeader(
-                        title: 'COMPLETE YOUR SETUP',
-                        subtitle: 'Recommended accessories',
-                      ),
-                      const SizedBox(height: 10),
-                      _SetupSuggestions(
-                        onProductTap: (productId) {
-                          context.push('/products/$productId');
-                        },
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Go Back'),
                       ),
                     ],
                   ),
-                );
-              },
-            ),
-          ),
-          AppNavigationFooter(
-            currentIndex: 1,
-            onTabSelected: (index) {
-              if (index == 0) {
-                context.go('/home');
-              } else if (index == 1) {
-                context.go('/products');
-              }
+                ),
+              );
+            },
+            data: (payload) {
+              final selectedOptions = ref.watch(
+                productDetailSelectionProvider(productId),
+              );
+              final defaultOptions = {
+                for (final option in payload.configOptions)
+                  if (option.isDefault) option.optionGroup: option,
+              };
+              final state = ProductDetailState(
+                payload: payload,
+                selectedOptions: {...defaultOptions, ...selectedOptions},
+              );
+              return DefaultTabController(
+                length: 3,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                  children: [
+                    _DetailHeroCard(
+                      state: state,
+                      onSelectOption: (option) {
+                        ref
+                            .read(
+                              productDetailSelectionProvider(
+                                productId,
+                              ).notifier,
+                            )
+                            .selectOption(option);
+                      },
+                      onAddToCart: () {
+                        final notifier = ref.read(checkoutProvider.notifier);
+                        final product = payload.product;
+                        final price = product.dealPrice ?? product.basePrice;
+                        notifier.addItem(OrderItem(
+                          id: product.productId,
+                          name: product.name,
+                          type: 'PRODUCT',
+                          variant: '',
+                          quantity: 1,
+                          price: price,
+                          imageUrl: product.thumbnailUrl,
+                        ));
+                        context.go('/checkout');
+                      },
+                      onAddToWishlist: () {},
+                      onCompare: () {
+                        // toggle current product into compare list then open compare
+                        ref.read(compareProvider.notifier).toggle(productId);
+                        final ids = ref.read(compareProvider).join(',');
+                        context.go('/product/compare${ids.isNotEmpty ? '?ids=$ids' : ''}');
+                      },
+                    ),
+                    const SizedBox(height: 14),
+                    _SectionHeader(
+                      title: 'PERFORMANCE',
+                      subtitle: 'Quick snapshot of the build',
+                    ),
+                    const SizedBox(height: 10),
+                    _PerformanceCard(benchmarks: state.benchmarks),
+                    const SizedBox(height: 14),
+                    _SectionHeader(
+                      title: 'SPECIFICATIONS',
+                      subtitle: 'Hardware details',
+                    ),
+                    const SizedBox(height: 10),
+                    _SpecsCard(specs: state.specs),
+                    const SizedBox(height: 14),
+                    _SectionHeader(
+                      title: 'REVIEWS',
+                      subtitle: '${state.reviews.length} customer reviews',
+                    ),
+                    const SizedBox(height: 10),
+                    _ReviewsPreview(reviews: state.reviews),
+                    const SizedBox(height: 14),
+                    _SectionHeader(
+                      title: 'COMPLETE YOUR SETUP',
+                      subtitle: 'Recommended accessories',
+                    ),
+                    const SizedBox(height: 10),
+                    _SetupSuggestions(
+                      onProductTap: (productId) {
+                        context.push('/products/$productId');
+                      },
+                    ),
+                  ],
+                ),
+              );
             },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -1020,4 +955,3 @@ class _EmptyCard extends StatelessWidget {
     );
   }
 }
-

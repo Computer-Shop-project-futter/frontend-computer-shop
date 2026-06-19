@@ -129,6 +129,8 @@ class _CatalogImage extends StatelessWidget {
   const _CatalogImage({
     required this.imageUrl,
     this.fallbackAsset,
+    this.width,
+    this.height,
   });
 
   @override

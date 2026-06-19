@@ -4,9 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../providers/products_provider.dart';
 import '../../../compare/presentation/providers/compare_provider.dart';
-import '../../../shared/footer/app_footer.dart';
-import '../../../shared/header/app_main_header.dart';
-import '../../../shared/widgets/navigation/app_drawer.dart';
 import 'package:computer_shop/client/features/cart/presentation/providers/checkout_provider.dart';
 import 'package:computer_shop/client/features/cart/domain/checkout_model.dart';
 import '../widgets/filter_bottom_sheet.dart';
@@ -21,21 +18,9 @@ class ProductListingPage extends ConsumerWidget {
     final productsState = ref.watch(productsProvider);
     final compareIds = ref.watch(compareProvider);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      drawer: const AppDrawer(),
-      body: Column(
-        children: [
-          AppMainHeader(
-            dark: true,
-            showSearch: true,
-            showFavorites: true,
-            showCart: true,
-            onSearchPressed: () => _openFilters(context, ref),
-            onFavoritesPressed: () => context.go('/wishlist'),
-            onCartPressed: () => context.go('/cart'),
-          ),
-          Expanded(
+    return Column(
+      children: [
+        Expanded(
             child: productsState.when(
               loading: () =>
                   _LoadingList(onFilterTap: () => _openFilters(context, ref)),
@@ -246,19 +231,8 @@ class ProductListingPage extends ConsumerWidget {
                 ],
               ),
             ),
-          AppNavigationFooter(
-            currentIndex: 1,
-            onTabSelected: (index) {
-              if (index == 0) {
-                context.go('/home');
-              } else if (index == 1) {
-                context.go('/products');
-              }
-            },
-          ),
         ],
-      ),
-    );
+      );
   }
 
   void _openFilters(BuildContext context, WidgetRef ref) {

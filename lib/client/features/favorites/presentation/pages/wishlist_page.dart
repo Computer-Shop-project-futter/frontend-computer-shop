@@ -3,16 +3,10 @@
 import 'package:computer_shop/client/features/favorites/presentation/widgets/wishlist_category_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../providers/wishlist_provider.dart';
 import '../widgets/wishlist_item_card.dart';
 import '../widgets/wishlist_search_bar.dart';
-import '../../../shared/header/app_main_header.dart';
-import '../../../shared/widgets/navigation/app_drawer.dart';
-import '../../../shared/footer/app_footer.dart';
-
-
 class WishlistPage extends ConsumerStatefulWidget {
   const WishlistPage({super.key});
 
@@ -28,22 +22,9 @@ class _WishlistPageState extends ConsumerState<WishlistPage> {
     final productCount = wishlistState.productCount;
     final buildCount = wishlistState.buildCount;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      drawer: const AppDrawer(),
-      body: Column(
-        children: [
-          // Use AppMainHeader with dark mode
-          AppMainHeader(
-            dark: true,
-            showBack: true,
-            showCart: true,
-            onBackPressed: () => Navigator.pop(context),
-            onCartPressed: () => context.go('/cart'),
-          ),
-
-          // Main Content
-          Expanded(
+    return Column(
+      children: [
+        Expanded(
             child: wishlistState.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : Column(
@@ -129,15 +110,8 @@ class _WishlistPageState extends ConsumerState<WishlistPage> {
                     ],
                   ),
           ),
-
-          // Use AppNavigationFooter
-          AppNavigationFooter(
-            currentIndex: 0,
-            onTabSelected: (index) {},
-          ),
         ],
-      ),
-    );
+      );
   }
 
   void _showClearAllDialog(BuildContext context, WidgetRef ref) {

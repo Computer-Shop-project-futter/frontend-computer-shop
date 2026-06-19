@@ -1,13 +1,8 @@
 // lib/features/repair/presentation/pages/repair_page.dart
 
 import 'package:computer_shop/client/features/repair/domain/repair_model.dart';
-import 'package:computer_shop/client/features/shared/footer/app_footer.dart';
-import 'package:computer_shop/client/features/shared/header/app_main_header.dart';
-import 'package:computer_shop/client/features/shared/header/app_header.dart';
-import 'package:computer_shop/client/features/shared/widgets/navigation/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../providers/repair_provider.dart';
 import '../widgets/repair_step_indicator.dart';
@@ -29,31 +24,9 @@ class _RepairPageState extends ConsumerState<RepairPage> {
     final repairState = ref.watch(repairProvider);
     final notifier = ref.read(repairProvider.notifier);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      drawer: const AppDrawer(),
-      body: Column(
-        children: [
-          // Header
-          AppMainHeader(
-            dark: true,
-            showBack: true,
-            onBackPressed: () => Navigator.pop(context),
-            actions: [
-              const Spacer(),
-              AppHeaderIconButton(
-                icon: Icons.history_rounded,
-                onTap: () {
-                  _showRepairHistory(context, repairState.repairHistory);
-                },
-                backgroundColor: Colors.white.withOpacity(0.12),
-                iconColor: Colors.white,
-              ),
-            ],
-          ),
-
-          // Main Content
-          Expanded(
+    return Column(
+      children: [
+        Expanded(
             child: repairState.isLoading && repairState.step == 0
                 ? const Center(child: CircularProgressIndicator())
                 : SingleChildScrollView(
@@ -102,21 +75,8 @@ class _RepairPageState extends ConsumerState<RepairPage> {
                   ),
           ),
 
-          // Bottom Navigation
-          AppNavigationFooter(
-            currentIndex: 3, // Repair tab index (updated after removing wishlist from footer)
-            onTabSelected: (index) {
-              if (index == 0) {
-                context.go('/home');
-              } else if (index == 1) context.go('/products');
-              else if (index == 2) context.go('/builder');
-              else if (index == 3) context.go('/repair');
-              else if (index == 4) context.go('/account');
-            },
-          ),
         ],
-      ),
-    );
+      );
   }
 
   Widget _buildStepContent(RepairState state, RepairNotifier notifier) {

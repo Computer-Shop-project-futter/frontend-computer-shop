@@ -81,7 +81,7 @@ class _BrandHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _G14Badge(),
+          _G14Badge(fontSize: null,),
           const SizedBox(width: 10),
           const Text(
             'G14',
@@ -100,7 +100,7 @@ class _BrandHeader extends StatelessWidget {
 
 class _G14Badge extends StatelessWidget {
   final double fontSize;
-  const _G14Badge();
+  const _G14Badge({required this.fontSize});
 
   @override
   Widget build(BuildContext context) {

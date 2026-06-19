@@ -29,6 +29,9 @@ class AppMainHeader extends StatelessWidget {
   /// Show cart icon
   final bool showCart;
   
+  /// Show chat icon
+  final bool showChat;
+  
   /// Callback for search button
   final VoidCallback? onSearchPressed;
   
@@ -37,6 +40,9 @@ class AppMainHeader extends StatelessWidget {
   
   /// Callback for cart button
   final VoidCallback? onCartPressed;
+  
+  /// Callback for chat button
+  final VoidCallback? onChatPressed;
 
   const AppMainHeader({
     super.key,
@@ -48,9 +54,11 @@ class AppMainHeader extends StatelessWidget {
     this.showSearch = false,
     this.showFavorites = false,
     this.showCart = false,
+    this.showChat = false,
     this.onSearchPressed,
     this.onFavoritesPressed,
     this.onCartPressed,
+    this.onChatPressed,
   });
 
   @override
@@ -137,10 +145,21 @@ class AppMainHeader extends StatelessWidget {
                   : const Color(0xFFF0F2F5),
               iconColor: dark ? Colors.white : const Color(0xFF10213B),
             ),
+          if (showCart) const SizedBox(width: 8),
+          
+          if (showChat)
+            AppHeaderIconButton(
+              icon: Icons.chat_bubble_outline_rounded,
+              onTap: onChatPressed ?? () => context.go('/chat'),
+              backgroundColor: dark 
+                  ? Colors.white.withOpacity(0.12)
+                  : const Color(0xFFF0F2F5),
+              iconColor: dark ? Colors.white : const Color(0xFF10213B),
+            ),
           
           // Custom Actions
           if (actions != null) ...[
-            if (showCart || showFavorites || showSearch)
+            if (showCart || showFavorites || showSearch || showChat)
               const SizedBox(width: 0),
             ...actions!,
           ],

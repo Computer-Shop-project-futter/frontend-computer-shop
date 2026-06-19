@@ -7,9 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../providers/builder_provider.dart';
-import '../../../shared/header/app_main_header.dart';
-import '../../../shared/widgets/navigation/app_drawer.dart';
-import '../../../shared/footer/app_footer.dart';
 
 class MyBuildsPage extends ConsumerWidget {
   const MyBuildsPage({super.key});
@@ -19,41 +16,9 @@ class MyBuildsPage extends ConsumerWidget {
     final builderState = ref.watch(builderProvider);
     final notifier = ref.read(builderProvider.notifier);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      drawer: const AppDrawer(),
-      body: Column(
-        children: [
-          AppMainHeader(
-            dark: true,
-            actions: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      notifier._createNewBuild();
-                      context.go('/builder/edit');
-                    },
-                    borderRadius: BorderRadius.circular(999),
-                    child: const Icon(
-                      Icons.add_rounded,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          
-          Expanded(
+    return Column(
+      children: [
+        Expanded(
             child: builderState.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : builderState.savedBuilds.isEmpty
@@ -85,20 +50,8 @@ class MyBuildsPage extends ConsumerWidget {
                       ),
           ),
           
-          AppNavigationFooter(
-            currentIndex: 2, // Builder tab index (updated)
-            onTabSelected: (index) {
-              if (index == 0) {
-                context.go('/home');
-              } else if (index == 1) context.go('/products');
-              else if (index == 2) context.go('/builder');
-              else if (index == 3) context.go('/repair');
-              else if (index == 4) context.go('/account');
-            },
-          ),
         ],
-      ),
-    );
+      );
   }
 
   void _showDeleteDialog(BuildContext context, WidgetRef ref, String buildId) {

@@ -13,7 +13,7 @@ class AppDrawer extends ConsumerStatefulWidget {
 }
 
 class _AppDrawerState extends ConsumerState<AppDrawer> {
-  String _selectedActivity = 'builds'; // Track selected activity item
+  String _selectedActivity = 'builds';
 
   @override
   Widget build(BuildContext context) {
@@ -22,44 +22,34 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
 
     return Drawer(
       backgroundColor: AppColors.kBackground,
-        child: Column(
+      child: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Profile Section
                   _buildProfileSection(user),
                   const SizedBox(height: 24),
-
-                  // Post Message Button
                   _buildPostMessageButton(),
                   const SizedBox(height: 24),
-
-                  // Shop by Category Section
                   _buildShopByCategory(),
                   const SizedBox(height: 32),
-
-                  // My Activity Section
                   _buildMyActivity(),
                 ],
               ),
             ),
           ),
-          // Footer Section
           _buildFooterSection(context, authState),
         ],
       ),
     );
   }
 
-  /// Profile Section Widget
   Widget _buildProfileSection(user) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          // Avatar
           Container(
             width: 80,
             height: 80,
@@ -75,45 +65,27 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Center(
-                          child: Icon(
-                            Icons.person,
-                            size: 40,
-                            color: AppColors.kSecondaryText,
-                          ),
+                          child: Icon(Icons.person, size: 40, color: AppColors.kSecondaryText),
                         );
                       },
                     ),
                   )
                 : Center(
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: AppColors.kSecondaryText,
-                    ),
+                    child: Icon(Icons.person, size: 40, color: AppColors.kSecondaryText),
                   ),
           ),
           const SizedBox(height: 16),
-
-          // User Name
           Text(
             user?.fullName ?? 'Tech Enthusiast',
-            style: AppTextStyles.headingSmall.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.headingSmall.copyWith(fontWeight: FontWeight.w600),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
-
-          // User Status
           Text(
             'OS Elite Member',
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.kSecondaryText,
-            ),
+            style: AppTextStyles.bodySmall.copyWith(color: AppColors.kSecondaryText),
           ),
           const SizedBox(height: 12),
-
-          // Points Badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
@@ -124,11 +96,7 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.star,
-                  size: 14,
-                  color: Color(0xFFFFB800),
-                ),
+                const Icon(Icons.star, size: 14, color: Color(0xFFFFB800)),
                 const SizedBox(width: 6),
                 Text(
                   '1,240 Points',
@@ -145,7 +113,6 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
     );
   }
 
-  /// Post Message Button
   Widget _buildPostMessageButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -155,29 +122,22 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
         child: ElevatedButton(
           onPressed: () {
             Navigator.pop(context);
-            // TODO: Navigate to post message page
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF5B67CA), // Primary blue
+            backgroundColor: const Color(0xFF5B67CA),
             foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             elevation: 0,
           ),
           child: Text(
             'POST MESSAGE',
-            style: AppTextStyles.labelLarge.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.labelLarge.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
           ),
         ),
       ),
     );
   }
 
-  /// Shop by Category Section
   Widget _buildShopByCategory() {
     final categories = [
       ('Laptops', Icons.laptop),
@@ -191,7 +151,6 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section Title
           Text(
             'SHOP BY CATEGORY',
             style: AppTextStyles.labelLarge.copyWith(
@@ -201,8 +160,6 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
             ),
           ),
           const SizedBox(height: 12),
-
-          // Category Items
           ...categories.map((category) {
             return _buildCategoryItem(category.$1, category.$2);
           }),
@@ -211,42 +168,31 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
     );
   }
 
-  /// Category Item
   Widget _buildCategoryItem(String label, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: InkWell(
         onTap: () {
           Navigator.pop(context);
-          // TODO: Navigate to category page
         },
         child: Row(
           children: [
-            Icon(
-              icon,
-              size: 20,
-              color: AppColors.kSecondaryText,
-            ),
+            Icon(icon, size: 20, color: AppColors.kSecondaryText),
             const SizedBox(width: 12),
-            Text(
-              label,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.kPrimaryText,
-              ),
-            ),
+            Text(label, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.kPrimaryText)),
           ],
         ),
       ),
     );
   }
 
-  /// My Activity Section
   Widget _buildMyActivity() {
     final activityItems = [
       ('builds', 'My Builds', Icons.build),
       ('wishlist', 'Wishlist', Icons.favorite_border),
       ('coupon', 'Coupons', Icons.local_offer),
       ('orders', 'Order History', Icons.receipt),
+      ('chat', 'Support Chat', Icons.chat_bubble_outline),
     ];
 
     return Padding(
@@ -254,7 +200,6 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section Title
           Text(
             'MY ACTIVITY',
             style: AppTextStyles.labelLarge.copyWith(
@@ -264,21 +209,14 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
             ),
           ),
           const SizedBox(height: 12),
-
-          // Activity Items
           ...activityItems.map((item) {
-            return _buildActivityItem(
-              id: item.$1,
-              label: item.$2,
-              icon: item.$3,
-            );
+            return _buildActivityItem(id: item.$1, label: item.$2, icon: item.$3);
           }),
         ],
       ),
     );
   }
 
-  /// Activity Item with Selection Highlight
   Widget _buildActivityItem({
     required String id,
     required String label,
@@ -294,7 +232,6 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
             _selectedActivity = id;
           });
           Navigator.pop(context);
-          // Navigate to the selected activity
           if (id == 'builds') {
             context.go('/builder');
           } else if (id == 'wishlist') {
@@ -303,12 +240,14 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
             context.go('/coupon');
           } else if (id == 'orders') {
             context.go('/orders');
+          } else if (id == 'chat') {
+            context.go('/chat');
           }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF5B67CA).withOpacity(0.1) : Colors.transparent,
+            color: isSelected ? const Color(0xFF5B67CA).withValues(alpha: 0.1) : Colors.transparent,
             borderRadius: BorderRadius.circular(6),
           ),
           child: Row(
@@ -333,69 +272,37 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
     );
   }
 
-  /// Footer Section with Legal, Support, and Logout
   Widget _buildFooterSection(BuildContext context, AuthState authState) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: AppColors.kBorder),
-        ),
+        border: Border(top: BorderSide(color: AppColors.kBorder)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Version Info
           Text(
             'v2.4.1',
-            style: AppTextStyles.labelSmall.copyWith(
-              color: AppColors.kSecondaryText,
-            ),
+            style: AppTextStyles.labelSmall.copyWith(color: AppColors.kSecondaryText),
           ),
           const SizedBox(height: 12),
-
-          // Footer Menu Items
-          _buildFooterMenuItem(
-            'Legal Information',
-            Icons.description_outlined,
-            () {
-              Navigator.pop(context);
-              // TODO: Navigate to legal info page
-            },
-          ),
+          _buildFooterMenuItem('Legal Information', Icons.description_outlined, () {
+            Navigator.pop(context);
+          }),
           const SizedBox(height: 12),
-
-          _buildFooterMenuItem(
-            'Support Chat',
-            Icons.chat_bubble_outline,
-            () {
-              Navigator.pop(context);
-              // TODO: Open support chat
-            },
-          ),
+          _buildFooterMenuItem('Support Chat', Icons.chat_bubble_outline, () {
+            Navigator.pop(context);
+            context.go('/chat');
+          }),
           const SizedBox(height: 12),
-
-          _buildFooterMenuItem(
-            'Account Settings',
-            Icons.settings_outlined,
-            () {
-              Navigator.pop(context);
-              // TODO: Navigate to account settings
-            },
-          ),
+          _buildFooterMenuItem('Account Settings', Icons.settings_outlined, () {
+            Navigator.pop(context);
+          }),
           const SizedBox(height: 12),
-
-          _buildFooterMenuItem(
-            'Support',
-            Icons.help_outline,
-            () {
-              Navigator.pop(context);
-              // TODO: Navigate to support page
-            },
-          ),
+          _buildFooterMenuItem('Support', Icons.help_outline, () {
+            Navigator.pop(context);
+          }),
           const SizedBox(height: 16),
-
-          // Logout Button
           SizedBox(
             width: double.infinity,
             height: 40,
@@ -406,11 +313,7 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
               },
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.logout,
-                    size: 18,
-                    color: AppColors.kError,
-                  ),
+                  const Icon(Icons.logout, size: 18, color: AppColors.kError),
                   const SizedBox(width: 12),
                   Text(
                     'Logout',
@@ -428,42 +331,26 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
     );
   }
 
-  /// Footer Menu Item
   Widget _buildFooterMenuItem(String label, IconData icon, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 18,
-            color: AppColors.kSecondaryText,
-          ),
+          Icon(icon, size: 18, color: AppColors.kSecondaryText),
           const SizedBox(width: 12),
-          Text(
-            label,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.kPrimaryText,
-            ),
-          ),
+          Text(label, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.kPrimaryText)),
         ],
       ),
     );
   }
 
-  /// Logout Confirmation Dialog
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.kBackground,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        title: Text(
-          'Logout',
-          style: AppTextStyles.headingSmall,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Text('Logout', style: AppTextStyles.headingSmall),
         content: Text(
           'Are you sure you want to logout?',
           style: AppTextStyles.bodyMedium,
@@ -473,9 +360,7 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: AppTextStyles.labelLarge.copyWith(
-                color: AppColors.kSecondaryText,
-              ),
+              style: AppTextStyles.labelLarge.copyWith(color: AppColors.kSecondaryText),
             ),
           ),
           ElevatedButton(
@@ -485,15 +370,11 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.kError,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
             child: Text(
               'Logout',
-              style: AppTextStyles.labelLarge.copyWith(
-                color: Colors.white,
-              ),
+              style: AppTextStyles.labelLarge.copyWith(color: Colors.white),
             ),
           ),
         ],

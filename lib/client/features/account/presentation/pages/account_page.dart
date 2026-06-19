@@ -5,9 +5,6 @@ import 'package:computer_shop/client/features/account/widgets/address_card.dart'
 import 'package:computer_shop/client/features/account/widgets/order_card.dart';
 import 'package:computer_shop/client/features/account/widgets/profile_header.dart';
 import 'package:computer_shop/client/features/account/widgets/settings_tile.dart';
-import 'package:computer_shop/client/features/shared/footer/app_footer.dart';
-import 'package:computer_shop/client/features/shared/header/app_main_header.dart';
-import 'package:computer_shop/client/features/shared/widgets/navigation/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -29,20 +26,9 @@ class _AccountPageState extends ConsumerState<AccountPage> {
     final accountState = ref.watch(accountProvider);
     final notifier = ref.read(accountProvider.notifier);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      drawer: const AppDrawer(),
-      body: Column(
-        children: [
-          // Header
-          AppMainHeader(
-            dark: true,
-            showBack: true,
-            onBackPressed: () => Navigator.pop(context),
-          ),
-
-          // Main Content
-          Expanded(
+    return Column(
+      children: [
+        Expanded(
             child: accountState.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : RefreshIndicator(
@@ -105,21 +91,8 @@ class _AccountPageState extends ConsumerState<AccountPage> {
                   ),
           ),
 
-          // Bottom Navigation
-          AppNavigationFooter(
-            currentIndex: 4, // Account tab index (updated)
-            onTabSelected: (index) {
-              if (index == 0) {
-                context.go('/home');
-              } else if (index == 1) context.go('/products');
-              else if (index == 2) context.go('/builder');
-              else if (index == 3) context.go('/repair');
-              else if (index == 4) context.go('/account');
-            },
-          ),
         ],
-      ),
-    );
+      );
   }
 
   void _showEditProfileDialog(BuildContext context, WidgetRef ref, UserProfile user) {

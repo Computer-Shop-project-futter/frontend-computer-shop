@@ -1,5 +1,6 @@
 // lib/features/account/data/account_repository_supabase.dart
 
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/supabase/supabase_client.dart';
 import '../domain/account_model.dart';
 
@@ -29,7 +30,7 @@ class AccountRepositorySupabase {
         email: user.email ?? '',
         phone: user.userMetadata?['phone'] ?? '',
         avatarUrl: user.userMetadata?['avatar_url'],
-        joinDate: user.createdAt,
+        joinDate: DateTime.parse(user.createdAt!),
       );
     }
   }
@@ -45,10 +46,12 @@ class AccountRepositorySupabase {
 
     // Update auth user metadata
     await _supabase.auth.updateUser(
-      data: {
-        'full_name': fullName,
-        'phone': phone,
-      },
+      UserAttributes(
+        data: {
+          'full_name': fullName,
+          'phone': phone,
+        },
+      ),
     );
 
     // Update users table
@@ -68,7 +71,7 @@ class AccountRepositorySupabase {
       email: email,
       phone: phone,
       avatarUrl: user.userMetadata?['avatar_url'],
-      joinDate: user.createdAt,
+      joinDate: DateTime.parse(user.createdAt!),
     );
   }
 

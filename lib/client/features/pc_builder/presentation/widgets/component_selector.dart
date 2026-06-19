@@ -28,141 +28,138 @@ class _ComponentSelectorState extends ConsumerState<ComponentSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      body: Column(
-        children: [
-          AppHeaderBar(
-            dark: false,
+    return Column(
+      children: [
+        AppHeaderBar(
+          dark: false,
+          child: Row(
+            children: [
+              AppHeaderIconButton(
+                icon: Icons.arrow_back_rounded,
+                onTap: widget.onClose,
+                backgroundColor: const Color(0xFFF0F2F5),
+                iconColor: const Color(0xFF10213B),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'RIGBUILDER',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF10213B),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Search Bar
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const TextField(
+              decoration: InputDecoration(
+                hintText: 'Search components...',
+                prefixIcon: Icon(Icons.search_rounded),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(vertical: 14),
+              ),
+            ),
+          ),
+        ),
+
+        // Brand Filters (for CPU only)
+        if (widget.componentType == ComponentType.cpu)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                AppHeaderIconButton(
-                  icon: Icons.arrow_back_rounded,
-                  onTap: widget.onClose,
-                  backgroundColor: const Color(0xFFF0F2F5),
-                  iconColor: const Color(0xFF10213B),
+                _FilterChip(
+                  label: 'All',
+                  isSelected: _selectedBrand == null,
+                  onTap: () => setState(() => _selectedBrand = null),
                 ),
-                const SizedBox(width: 12),
-                const Expanded(
-                  child: Text(
-                    'RIGBUILDER',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF10213B),
-                    ),
-                  ),
+                const SizedBox(width: 10),
+                _FilterChip(
+                  label: 'Intel',
+                  isSelected: _selectedBrand == CpuBrand.intel,
+                  onTap: () => setState(() => _selectedBrand = CpuBrand.intel),
+                ),
+                const SizedBox(width: 10),
+                _FilterChip(
+                  label: 'AMD',
+                  isSelected: _selectedBrand == CpuBrand.amd,
+                  onTap: () => setState(() => _selectedBrand = CpuBrand.amd),
                 ),
               ],
             ),
           ),
 
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: const TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search components...',
-                  prefixIcon: Icon(Icons.search_rounded),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 14),
-                ),
-              ),
-            ),
-          ),
+        const SizedBox(height: 16),
 
-          // Brand Filters (for CPU only)
-          if (widget.componentType == ComponentType.cpu)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+        // Components List
+        Expanded(
+          child: FutureBuilder<List<Component>>(
+            future: BuilderRepository().getComponentsByType(
+              widget.componentType,
+              brand: _selectedBrand,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              final components = snapshot.data ?? [];
+
+              return ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: components.length,
+                itemBuilder: (context, index) {
+                  final component = components[index];
+                  final isSelected = false; // Check against current build
+
+                  return _ComponentItem(
+                    component: component,
+                    isSelected: isSelected,
+                    onSelect: () => widget.onSelect(component),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+
+        // Bottom Navigation
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border(top: BorderSide(color: Colors.grey.shade200)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _FilterChip(
-                    label: 'All',
-                    isSelected: _selectedBrand == null,
-                    onTap: () => setState(() => _selectedBrand = null),
-                  ),
-                  const SizedBox(width: 10),
-                  _FilterChip(
-                    label: 'Intel',
-                    isSelected: _selectedBrand == CpuBrand.intel,
-                    onTap: () => setState(() => _selectedBrand = CpuBrand.intel),
-                  ),
-                  const SizedBox(width: 10),
-                  _FilterChip(
-                    label: 'AMD',
-                    isSelected: _selectedBrand == CpuBrand.amd,
-                    onTap: () => setState(() => _selectedBrand = CpuBrand.amd),
-                  ),
+                  _NavButton(label: 'Build', isSelected: true),
+                  _NavButton(label: 'Parts', isSelected: false),
+                  _NavButton(label: 'Guides', isSelected: false),
+                  _NavButton(label: 'Save', isSelected: false),
                 ],
               ),
             ),
-
-          const SizedBox(height: 16),
-
-          // Components List
-          Expanded(
-            child: FutureBuilder<List<Component>>(
-              future: BuilderRepository().getComponentsByType(
-                widget.componentType,
-                brand: _selectedBrand,
-              ),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                final components = snapshot.data ?? [];
-                
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: components.length,
-                  itemBuilder: (context, index) {
-                    final component = components[index];
-                    final isSelected = false; // Check against current build
-                    
-                    return _ComponentItem(
-                      component: component,
-                      isSelected: isSelected,
-                      onSelect: () => widget.onSelect(component),
-                    );
-                  },
-                );
-              },
-            ),
           ),
-
-          // Bottom Navigation
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(top: BorderSide(color: Colors.grey.shade200)),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _NavButton(label: 'Build', isSelected: true),
-                    _NavButton(label: 'Parts', isSelected: false),
-                    _NavButton(label: 'Guides', isSelected: false),
-                    _NavButton(label: 'Save', isSelected: false),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
