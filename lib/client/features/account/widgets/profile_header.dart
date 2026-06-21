@@ -47,6 +47,14 @@ class ProfileHeader extends StatelessWidget {
                     child: Image.network(
                       user.avatarUrl!,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        print('ERROR: Failed to load avatar image: $error');
+                        return const Icon(
+                          Icons.person_rounded,
+                          size: 40,
+                          color: Colors.white,
+                        );
+                      },
                     ),
                   )
                 : const Icon(

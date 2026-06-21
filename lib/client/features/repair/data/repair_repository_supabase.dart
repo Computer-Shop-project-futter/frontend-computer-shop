@@ -7,18 +7,34 @@ class RepairRepositorySupabase {
   final SupabaseClientService _supabase = SupabaseClientService();
 
   Future<List<RepairRequest>> getRepairRequests() async {
-    final user = _supabase.auth.currentUser;
-    if (user == null) return [];
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        print('WARNING: No authenticated user found');
+        return [];
+      }
 
-    final response = await _supabase.client
-        .from('repair_requests')
-        .select()
-        .eq('user_id', user.id)
-        .order('submitted_at', ascending: false);
+      print('DEBUG: Fetching repair requests for user: ${user.id}');
+      final response = await _supabase.client
+          .from('repair_requests')
+          .select()
+          .eq('user_id', user.id)
+          .order('submitted_at', ascending: false);
 
-    return (response as List)
-        .map((json) => RepairRequest.fromDbJson(json as Map<String, dynamic>))
-        .toList();
+      if (response is! List) {
+        throw Exception('Invalid response format from repair_requests table');
+      }
+      
+      final repairs = (response as List)
+          .map((json) => RepairRequest.fromDbJson(json as Map<String, dynamic>))
+          .toList();
+      
+      print('INFO: Retrieved ${repairs.length} repair requests from database');
+      return repairs;
+    } catch (e) {
+      print('ERROR: Failed to fetch repair requests: $e');
+      rethrow;
+    }
   }
 
   Future<void> submitRepairRequest({
@@ -35,34 +51,67 @@ class RepairRepositorySupabase {
     DateTime? scheduledDate,
     String? technicianName,
   }) async {
-    final user = _supabase.auth.currentUser;
-    if (user == null) throw Exception('User not logged in');
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) throw Exception('User not logged in');
 
-    await _supabase.client.from('repair_requests').insert({
-      'repair_id': repairId,
-      'user_id': user.id,
-      'order_number': orderNumber,
-      'device_type': deviceType.toString().split('.').last,
-      'device_model': deviceModel,
-      'issues': issues,
-      'description': description,
-      'submitted_at': submittedAt.millisecondsSinceEpoch,
-      'status': status.toString().split('.').last,
-      'estimated_price': estimatedPrice,
-      'final_price': finalPrice,
-      'scheduled_date': scheduledDate?.millisecondsSinceEpoch,
-      'technician_name': technicianName,
-    });
+      // Validate inputs
+      if (repairId.isEmpty || orderNumber.isEmpty || deviceModel.isEmpty) {
+        throw Exception('Required fields cannot be empty');
+      }
+      if (estimatedPrice < 0) {
+        throw Exception('Estimated price cannot be negative');
+      }
+
+      print('DEBUG: Submitting repair to database - ID: $repairId, Order: $orderNumber');
+      print('DEBUG: Device: $deviceModel, Type: ${deviceType.toString().split('.').last}');
+      
+      await _supabase.client.from('repair_requests').insert({
+        'repair_id': repairId,
+        'user_id': user.id,
+        'order_number': orderNumber,
+        'device_type': deviceType.toString().split('.').last,
+        'device_model': deviceModel,
+        'issues': issues,
+        'description': description,
+        'submitted_at': submittedAt.millisecondsSinceEpoch,
+        'status': status.toString().split('.').last,
+        'estimated_price': estimatedPrice,
+        'final_price': finalPrice,
+        'scheduled_date': scheduledDate?.millisecondsSinceEpoch,
+        'technician_name': technicianName,
+      });
+      
+      print('INFO: Repair request saved to database successfully');
+    } catch (e) {
+      print('ERROR: Failed to submit repair request to database: $e');
+      rethrow;
+    }
   }
 
   Future<void> cancelRepair(String repairId) async {
-    final user = _supabase.auth.currentUser;
-    if (user == null) return;
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw Exception('User not logged in');
+      }
 
-    await _supabase.client
-        .from('repair_requests')
-        .update({'status': 'cancelled'})
-        .eq('user_id', user.id)
-        .eq('repair_id', repairId);
+      if (repairId.isEmpty) {
+        throw Exception('Repair ID cannot be empty');
+      }
+
+      print('DEBUG: Cancelling repair in database - ID: $repairId');
+      
+      final response = await _supabase.client
+          .from('repair_requests')
+          .update({'status': 'cancelled'})
+          .eq('user_id', user.id)
+          .eq('repair_id', repairId);
+
+      print('INFO: Repair cancelled successfully in database');
+    } catch (e) {
+      print('ERROR: Failed to cancel repair: $e');
+      rethrow;
+    }
   }
 }

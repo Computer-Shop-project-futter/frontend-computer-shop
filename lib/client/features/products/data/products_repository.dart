@@ -27,6 +27,8 @@ class ProductFilters {
     this.searchQuery,
   });
 
+  static const Object _undefined = Object();
+
   ProductFilters copyWith({
     bool? featuredOnly,
     bool? dealOnly,
@@ -35,7 +37,7 @@ class ProductFilters {
     double? maxPrice,
     List<String>? categoryIds,
     List<String>? brandIds,
-    String? searchQuery,
+    Object? searchQuery = _undefined,
   }) {
     return ProductFilters(
       featuredOnly: featuredOnly ?? this.featuredOnly,
@@ -45,7 +47,7 @@ class ProductFilters {
       maxPrice: maxPrice ?? this.maxPrice,
       categoryIds: categoryIds ?? this.categoryIds,
       brandIds: brandIds ?? this.brandIds,
-      searchQuery: searchQuery ?? this.searchQuery,
+      searchQuery: searchQuery == _undefined ? this.searchQuery : searchQuery as String?,
     );
   }
 }

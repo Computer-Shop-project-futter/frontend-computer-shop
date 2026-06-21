@@ -20,9 +20,19 @@ class RepairNotifier extends StateNotifier<RepairState> {
   }
 
   Future<void> loadRepairHistory() async {
-    state = state.copyWith(isLoading: true);
-    final history = await _repository.getRepairHistory();
-    state = state.copyWith(repairHistory: history, isLoading: false);
+    try {
+      state = state.copyWith(isLoading: true, error: null);
+      print('DEBUG: Loading repair history from repository');
+      final history = await _repository.getRepairHistory();
+      state = state.copyWith(repairHistory: history, isLoading: false);
+      print('INFO: Repair history loaded successfully - ${history.length} repairs');
+    } catch (e) {
+      print('ERROR: Failed to load repair history: $e');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Failed to load repair history: ${e.toString()}',
+      );
+    }
   }
 
   void setDeviceType(DeviceType type) {
@@ -75,26 +85,45 @@ class RepairNotifier extends StateNotifier<RepairState> {
 
     state = state.copyWith(isLoading: true, error: null);
     
-    final repair = await _repository.submitRepairRequest(
-      deviceType: state.selectedDeviceType!,
-      deviceModel: state.deviceModel,
-      issues: state.selectedIssues,
-      description: state.description,
-    );
-    
-    final updatedHistory = [repair, ...state.repairHistory];
-    state = state.copyWith(
-      repairHistory: updatedHistory,
-      currentRepair: repair,
-      isLoading: false,
-    );
-    
-    resetForm();
+    try {
+      print('DEBUG: Submitting repair request');
+      final repair = await _repository.submitRepairRequest(
+        deviceType: state.selectedDeviceType!,
+        deviceModel: state.deviceModel,
+        issues: state.selectedIssues,
+        description: state.description,
+      );
+      
+      final updatedHistory = [repair, ...state.repairHistory];
+      state = state.copyWith(
+        repairHistory: updatedHistory,
+        currentRepair: repair,
+        isLoading: false,
+      );
+      print('INFO: Repair submitted successfully - ID: ${repair.id}');
+      
+      resetForm();
+    } catch (e) {
+      print('ERROR: Failed to submit repair: $e');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Failed to submit repair: ${e.toString()}',
+      );
+    }
   }
 
   Future<void> cancelRepair(String repairId) async {
-    await _repository.cancelRepair(repairId);
-    await loadRepairHistory();
+    try {
+      print('DEBUG: Cancelling repair - ID: $repairId');
+      await _repository.cancelRepair(repairId);
+      print('INFO: Repair cancelled successfully');
+      await loadRepairHistory();
+    } catch (e) {
+      print('ERROR: Failed to cancel repair: $e');
+      state = state.copyWith(
+        error: 'Failed to cancel repair: ${e.toString()}',
+      );
+    }
   }
 
   void clearError() {

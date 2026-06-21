@@ -30,20 +30,33 @@ class ProductComparePage extends ConsumerWidget {
 
     return Column(
       children: [
-        if (selectedIds.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '${selectedIds.length} product${selectedIds.length == 1 ? '' : 's'} selected',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (selectedIds.isNotEmpty)
+                Expanded(
+                  child: Text(
+                    '${selectedIds.length} product${selectedIds.length == 1 ? '' : 's'} selected',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              TextButton.icon(
+                onPressed: () => context.go(ProductRoutes.products),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 14),
+                label: const Text('BACK TO PRODUCTS'),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF2A66FF),
+                  textStyle: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
+            ],
           ),
+        ),
         Expanded(
           child: selectedIds.isEmpty
               ? Center(

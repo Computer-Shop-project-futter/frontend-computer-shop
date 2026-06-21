@@ -1,5 +1,7 @@
 // lib/features/account/presentation/pages/account_page.dart
 
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:computer_shop/client/features/account/domain/account_model.dart';
 import 'package:computer_shop/client/features/account/widgets/address_card.dart';
 import 'package:computer_shop/client/features/account/widgets/order_card.dart';
@@ -100,76 +102,185 @@ class _AccountPageState extends ConsumerState<AccountPage> {
     final emailController = TextEditingController(text: user.email);
     final phoneController = TextEditingController(text: user.phone);
     final formKey = GlobalKey<FormState>();
+    XFile? selectedImage;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Edit Profile'),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Full Name',
-                  border: OutlineInputBorder(),
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('Edit Profile'),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Avatar picker
+                GestureDetector(
+                  onTap: () async {
+                    final source = await showModalBottomSheet<ImageSource>(
+                      context: dialogContext,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      builder: (context) => SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 8),
+                                child: Text(
+                                  'Choose Avatar Source',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.camera_alt_outlined),
+                                title: const Text('Camera'),
+                                onTap: () => Navigator.pop(context, ImageSource.camera),
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.photo_library_outlined),
+                                title: const Text('Gallery'),
+                                onTap: () => Navigator.pop(context, ImageSource.gallery),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                    if (source != null) {
+                      final image = await ref.read(accountProvider.notifier).pickImage(source);
+                      if (image != null) {
+                        setDialogState(() {
+                          selectedImage = image;
+                        });
+                      }
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          shape: BoxShape.circle,
+                          image: selectedImage != null
+                              ? DecorationImage(
+                                  image: FileImage(File(selectedImage!.path)),
+                                  fit: BoxFit.cover,
+                                )
+                              : (user.avatarUrl != null
+                                  ? DecorationImage(
+                                      image: NetworkImage(user.avatarUrl!),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null),
+                        ),
+                        child: selectedImage == null && user.avatarUrl == null
+                            ? const Icon(Icons.person, size: 40, color: Colors.grey)
+                            : null,
+                      ),
+                      Positioned(
+                        bottom: 12,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2A66FF),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                validator: (v) => v?.isEmpty == true ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Full Name',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (v) => v?.isEmpty == true ? 'Required' : null,
                 ),
-                validator: (v) => v?.isEmpty == true ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Phone',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (v) => v?.isEmpty == true ? 'Required' : null,
                 ),
-                validator: (v) => v?.isEmpty == true ? 'Required' : null,
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (formKey.currentState!.validate()) {
-                await ref.read(accountProvider.notifier).updateProfile(
-                  fullName: nameController.text,
-                  email: emailController.text,
-                  phone: phoneController.text,
-                );
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Profile updated!'),
-                      backgroundColor: Color(0xFF2A66FF),
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2A66FF),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: phoneController,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (v) => v?.isEmpty == true ? 'Required' : null,
+                ),
+              ],
             ),
-            child: const Text('Save'),
           ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (!formKey.currentState!.validate()) return;
+
+                try {
+                  await ref.read(accountProvider.notifier).updateProfile(
+                    fullName: nameController.text,
+                    email: emailController.text,
+                    phone: phoneController.text,
+                    avatarFile: selectedImage,
+                  );
+                  if (dialogContext.mounted) {
+                    Navigator.pop(dialogContext);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Profile updated!'),
+                        backgroundColor: Color(0xFF2A66FF),
+                      ),
+                    );
+                  }
+                } catch (error) {
+                  if (dialogContext.mounted) {
+                    Navigator.pop(dialogContext);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Unable to update profile: $error'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2A66FF),
+              ),
+              child: const Text('Save'),
+            ),
+          ],
+        ),
       ),
     );
   }

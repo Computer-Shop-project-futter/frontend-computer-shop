@@ -21,9 +21,19 @@ class BuilderNotifier extends StateNotifier<BuilderState> {
   }
 
   Future<void> loadSavedBuilds() async {
-    state = state.copyWith(isLoading: true);
-    final builds = await _repository.getSavedBuilds();
-    state = state.copyWith(savedBuilds: builds, isLoading: false);
+    try {
+      state = state.copyWith(isLoading: true, error: null);
+      print('DEBUG: Loading saved builds from repository');
+      final builds = await _repository.getSavedBuilds();
+      state = state.copyWith(savedBuilds: builds, isLoading: false);
+      print('INFO: Saved builds loaded successfully - ${builds.length} builds');
+    } catch (e) {
+      print('ERROR: Failed to load saved builds: $e');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Failed to load saved builds: ${e.toString()}',
+      );
+    }
   }
 
   void _createNewBuild() {
@@ -92,22 +102,47 @@ void startComponentSelection(ComponentType type) {
   }
 
   Future<void> saveCurrentBuild() async {
-    if (state.currentBuild == null) return;
+    if (state.currentBuild == null) {
+      state = state.copyWith(
+        error: 'No build to save',
+      );
+      return;
+    }
     
-    state = state.copyWith(isLoading: true);
-    final saved = await _repository.saveBuild(state.currentBuild!);
-    
-    final updatedBuilds = [...state.savedBuilds, saved];
-    state = state.copyWith(
-      savedBuilds: updatedBuilds,
-      isLoading: false,
-    );
+    try {
+      state = state.copyWith(isLoading: true, error: null);
+      print('DEBUG: Saving build - ID: ${state.currentBuild!.id}, Name: ${state.currentBuild!.name}');
+      
+      final saved = await _repository.saveBuild(state.currentBuild!);
+      
+      final updatedBuilds = [...state.savedBuilds, saved];
+      state = state.copyWith(
+        savedBuilds: updatedBuilds,
+        isLoading: false,
+      );
+      print('INFO: Build saved successfully');
+    } catch (e) {
+      print('ERROR: Failed to save build: $e');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Failed to save build: ${e.toString()}',
+      );
+    }
   }
 
   Future<void> deleteBuild(String buildId) async {
-    await _repository.deleteBuild(buildId);
-    final updatedBuilds = state.savedBuilds.where((b) => b.id != buildId).toList();
-    state = state.copyWith(savedBuilds: updatedBuilds);
+    try {
+      print('DEBUG: Deleting build - ID: $buildId');
+      await _repository.deleteBuild(buildId);
+      final updatedBuilds = state.savedBuilds.where((b) => b.id != buildId).toList();
+      state = state.copyWith(savedBuilds: updatedBuilds, error: null);
+      print('INFO: Build deleted successfully');
+    } catch (e) {
+      print('ERROR: Failed to delete build: $e');
+      state = state.copyWith(
+        error: 'Failed to delete build: ${e.toString()}',
+      );
+    }
   }
 
   void loadBuildForEdit(BuildConfiguration build) {

@@ -1,5 +1,6 @@
 // lib/features/account/presentation/providers/account_provider.dart
 
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/account_repository.dart';
 import '../../domain/account_model.dart';
@@ -40,6 +41,7 @@ class AccountNotifier extends StateNotifier<AccountState> {
     required String fullName,
     required String email,
     required String phone,
+    XFile? avatarFile,
   }) async {
     state = state.copyWith(isLoading: true);
     
@@ -47,12 +49,18 @@ class AccountNotifier extends StateNotifier<AccountState> {
       fullName: fullName,
       email: email,
       phone: phone,
+      avatarFile: avatarFile,
     );
     
     state = state.copyWith(
       user: updatedUser,
       isLoading: false,
     );
+  }
+
+  /// Pick an image from gallery
+  Future<XFile?> pickImage(ImageSource source) async {
+    return await _repository.pickImage(source);
   }
 
   void setSelectedTab(int index) {

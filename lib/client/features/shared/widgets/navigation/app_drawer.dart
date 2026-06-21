@@ -174,6 +174,7 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
       child: InkWell(
         onTap: () {
           Navigator.pop(context);
+          context.go('/products?search=${Uri.encodeComponent(label)}');
         },
         child: Row(
           children: [

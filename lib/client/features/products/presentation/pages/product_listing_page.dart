@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../providers/products_provider.dart';
 import '../../../compare/presentation/providers/compare_provider.dart';
+import '../../data/products_repository.dart';
 import 'package:computer_shop/client/features/cart/presentation/providers/checkout_provider.dart';
 import 'package:computer_shop/client/features/cart/domain/checkout_model.dart';
 import '../widgets/filter_bottom_sheet.dart';
@@ -21,12 +22,28 @@ class ProductListingPage extends ConsumerStatefulWidget {
 
 class _ProductListingPageState extends ConsumerState<ProductListingPage> {
   late final TextEditingController _searchController;
-  bool _appliedInitialQuery = false;
+  String? _currentRouteSearchQuery;
 
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController(text: widget.initialSearchQuery?.trim() ?? '');
+    _currentRouteSearchQuery = widget.initialSearchQuery?.trim();
+    _searchController = TextEditingController(text: _currentRouteSearchQuery ?? '');
+
+    if (_currentRouteSearchQuery != null) {
+      _applySearchQuery(_currentRouteSearchQuery);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant ProductListingPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final nextQuery = widget.initialSearchQuery?.trim();
+    if (nextQuery != _currentRouteSearchQuery) {
+      _currentRouteSearchQuery = nextQuery;
+      _searchController.text = _currentRouteSearchQuery ?? '';
+      _applySearchQuery(_currentRouteSearchQuery);
+    }
   }
 
   @override
@@ -35,17 +52,18 @@ class _ProductListingPageState extends ConsumerState<ProductListingPage> {
     super.dispose();
   }
 
+  void _applySearchQuery(String? query) {
+    final trimmedQuery = query?.trim();
+    ref.read(productsProvider.notifier).applyFilter(
+          ref.read(productsProvider).value?.filters.copyWith(
+                searchQuery: trimmedQuery?.isEmpty == true ? null : trimmedQuery,
+              ) ??
+              ProductFilters(searchQuery: trimmedQuery?.isEmpty == true ? null : trimmedQuery),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (!_appliedInitialQuery && widget.initialSearchQuery?.trim().isNotEmpty == true) {
-      _appliedInitialQuery = true;
-      ref.read(productsProvider.notifier).applyFilter(
-            ref.read(productsProvider).value?.filters.copyWith(
-                  searchQuery: widget.initialSearchQuery?.trim(),
-                ) ??
-                ProductFilters(searchQuery: widget.initialSearchQuery?.trim()),
-          );
-    }
     final productsState = ref.watch(productsProvider);
     final compareIds = ref.watch(compareProvider);
 

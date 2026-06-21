@@ -2,6 +2,7 @@
 
 import '../domain/repair_model.dart';
 import 'package:flutter/material.dart';
+
 class RepairRepository {
   // Available repair services
   static const List<DeviceIssue> availableIssues = [
@@ -119,34 +120,72 @@ class RepairRepository {
     required List<String> issues,
     required String description,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 1000));
-    
-    // Calculate estimated price
-    double estimatedPrice = 0;
-    for (final issueId in issues) {
-      final issue = availableIssues.firstWhere((i) => i.id == issueId);
-      estimatedPrice += issue.basePrice;
+    try {
+      // Validate input
+      if (deviceModel.trim().isEmpty) {
+        throw Exception('Device model cannot be empty');
+      }
+      if (issues.isEmpty) {
+        throw Exception('At least one issue must be selected');
+      }
+      if (description.trim().isEmpty) {
+        throw Exception('Description cannot be empty');
+      }
+      
+      print('DEBUG: Submitting repair request - Device: $deviceModel, Issues: ${issues.length}');
+      await Future.delayed(const Duration(milliseconds: 1000));
+      
+      // Calculate estimated price
+      double estimatedPrice = 0;
+      for (final issueId in issues) {
+        try {
+          final issue = availableIssues.firstWhere((i) => i.id == issueId);
+          estimatedPrice += issue.basePrice;
+          print('DEBUG: Added issue ${issue.name} - \$${issue.basePrice}');
+        } catch (e) {
+          print('ERROR: Issue not found: $issueId');
+          throw Exception('Invalid issue selected: $issueId');
+        }
+      }
+      
+      // Apply discount for multiple issues
+      if (issues.length > 1) {
+        estimatedPrice = estimatedPrice * 0.9;
+        print('DEBUG: Applied 10% discount for multiple issues. Final price: \$$estimatedPrice');
+      }
+      
+      final repairRequest = RepairRequest(
+        id: 'repair_${DateTime.now().millisecondsSinceEpoch}',
+        orderNumber: 'R-${DateTime.now().year}-${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 4)}',
+        deviceType: deviceType,
+        deviceModel: deviceModel,
+        issues: issues,
+        description: description,
+        submittedAt: DateTime.now(),
+        status: RepairStatus.pending,
+        estimatedPrice: estimatedPrice,
+      );
+      
+      print('INFO: Repair request created successfully - ID: ${repairRequest.id}, Order: ${repairRequest.orderNumber}');
+      return repairRequest;
+    } catch (e) {
+      print('ERROR: Failed to submit repair request: $e');
+      rethrow;
     }
-    
-    // Apply discount for multiple issues
-    if (issues.length > 1) {
-      estimatedPrice = estimatedPrice * 0.9;
-    }
-    
-    return RepairRequest(
-      id: 'repair_${DateTime.now().millisecondsSinceEpoch}',
-      orderNumber: 'R-${DateTime.now().year}-${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 4)}',
-      deviceType: deviceType,
-      deviceModel: deviceModel,
-      issues: issues,
-      description: description,
-      submittedAt: DateTime.now(),
-      status: RepairStatus.pending,
-      estimatedPrice: estimatedPrice,
-    );
   }
 
   Future<void> cancelRepair(String repairId) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      if (repairId.isEmpty) {
+        throw Exception('Repair ID cannot be empty');
+      }
+      
+      print('DEBUG: Cancelling repair - ID: $repairId');
+      await Future.delayed(const Duration(milliseconds: 500));
+      print('INFO: Repair cancelled successfully - ID: $repairId');
+    } catch (e) {
+      print('ERROR: Failed to cancel repair: $e');
+      rethrow;
+    }
   }
 }

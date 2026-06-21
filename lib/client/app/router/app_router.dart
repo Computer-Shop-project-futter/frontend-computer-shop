@@ -100,8 +100,11 @@ class AppRouter {
         builder: (context, state, child) {
           // Determine current bottom nav index based on the matched location
           final int currentIndex = MainShell.indexForRoute(state.matchedLocation);
+          final bool isCompareRoute = state.matchedLocation.startsWith(ProductRoutes.compare);
           return MainShell(
             currentIndex: currentIndex,
+            showBack: isCompareRoute,
+            onBackPressed: isCompareRoute ? () => context.go(ProductRoutes.products) : null,
             child: child,
           );
         },

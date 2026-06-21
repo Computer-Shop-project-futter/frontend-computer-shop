@@ -25,10 +25,20 @@ class BuilderRepositoryHybrid extends BaseRepository {
 
   /// Get saved PC builds from local storage
   Future<List<BuildConfiguration>> getSavedBuilds({String? userId}) async {
-    if (kIsWeb) {
-      return List.unmodifiable(_webSavedBuilds);
+    try {
+      if (kIsWeb) {
+        print('DEBUG: Fetching builds from web storage (${_webSavedBuilds.length} builds)');
+        return List.unmodifiable(_webSavedBuilds);
+      }
+      
+      print('DEBUG: Fetching builds from SQLite (userId: ${userId ?? "all"})');
+      final builds = await _sqlite.getSavedBuilds(userId: userId);
+      print('INFO: Retrieved ${builds.length} builds from SQLite');
+      return builds;
+    } catch (e) {
+      print('ERROR: Failed to fetch saved builds: $e');
+      rethrow;
     }
-    return await _sqlite.getSavedBuilds(userId: userId);
   }
 
   /// Save a new PC build locally
@@ -36,65 +46,94 @@ class BuilderRepositoryHybrid extends BaseRepository {
     BuildConfiguration build, {
     String? userId,
   }) async {
-    if (kIsWeb) {
-      _webSavedBuilds.add(build);
-      return build;
-    }
-
-    // Save locally first
-    final saved = await _sqlite.saveBuild(build, userId: userId);
-
-    // Queue for remote sync
-    await addToSyncQueue(
-      operation: 'INSERT',
-      tableName: 'build_configurations',
-      data: {
-        'build_id': build.id,
-        'name': build.name,
-        'created_at': build.createdAt.millisecondsSinceEpoch,
-        'cpu_id': build.cpu?.id,
-        'gpu_id': build.gpu?.id,
-        'motherboard_id': build.motherboard?.id,
-        'ram_id': build.ram?.id,
-        'storage_id': build.storage?.id,
-        'cooling_id': build.cooling?.id,
-        'psu_id': build.psu?.id,
-        'case_id': build.pcCase?.id,
-      },
-    );
-
-    if (_isOnline) {
-      try {
-        await _supabase.saveBuild(saved, userId: userId);
-      } catch (e) {
-        debugPrint('Build sync save failed, queued for later: $e');
+    try {
+      if (kIsWeb) {
+        print('DEBUG: Saving build to web storage - ID: ${build.id}');
+        _webSavedBuilds.add(build);
+        print('INFO: Build saved to web storage');
+        return build;
       }
-    }
 
-    return saved;
+      print('DEBUG: Saving build to SQLite (hybrid mode, online: $_isOnline)');
+      
+      // Save locally first
+      final saved = await _sqlite.saveBuild(build, userId: userId);
+      print('INFO: Build saved to local SQLite database');
+
+      // Queue for remote sync
+      await addToSyncQueue(
+        operation: 'INSERT',
+        tableName: 'build_configurations',
+        data: {
+          'build_id': build.id,
+          'name': build.name,
+          'created_at': build.createdAt.millisecondsSinceEpoch,
+          'cpu_id': build.cpu?.id,
+          'gpu_id': build.gpu?.id,
+          'motherboard_id': build.motherboard?.id,
+          'ram_id': build.ram?.id,
+          'storage_id': build.storage?.id,
+          'cooling_id': build.cooling?.id,
+          'psu_id': build.psu?.id,
+          'case_id': build.pcCase?.id,
+        },
+      );
+      print('DEBUG: Added to sync queue for remote sync');
+
+      if (_isOnline) {
+        try {
+          print('DEBUG: Attempting online sync to Supabase');
+          await _supabase.saveBuild(saved, userId: userId);
+          print('INFO: Build synced to Supabase successfully');
+        } catch (e) {
+          print('WARNING: Online sync failed for save, will retry later: $e');
+        }
+      } else {
+        print('INFO: Offline mode - build queued for sync when online');
+      }
+
+      return saved;
+    } catch (e) {
+      print('ERROR: Failed to save build: $e');
+      rethrow;
+    }
   }
 
   /// Delete a PC build
   Future<void> deleteBuild(String buildId) async {
-    if (kIsWeb) {
-      _webSavedBuilds.removeWhere((build) => build.id == buildId);
-      return;
-    }
-
-    await _sqlite.deleteBuild(buildId);
-
-    await addToSyncQueue(
-      operation: 'DELETE',
-      tableName: 'build_configurations',
-      data: {'build_id': buildId},
-    );
-
-    if (_isOnline) {
-      try {
-        await _supabase.deleteBuild(buildId);
-      } catch (e) {
-        debugPrint('Build sync delete failed, queued for later: $e');
+    try {
+      if (kIsWeb) {
+        print('DEBUG: Deleting build from web storage - ID: $buildId');
+        _webSavedBuilds.removeWhere((build) => build.id == buildId);
+        print('INFO: Build deleted from web storage');
+        return;
       }
+
+      print('DEBUG: Deleting build from SQLite (online: $_isOnline)');
+      await _sqlite.deleteBuild(buildId);
+      print('INFO: Build deleted from local SQLite database');
+
+      await addToSyncQueue(
+        operation: 'DELETE',
+        tableName: 'build_configurations',
+        data: {'build_id': buildId},
+      );
+      print('DEBUG: Added to sync queue for remote deletion');
+
+      if (_isOnline) {
+        try {
+          print('DEBUG: Attempting online sync for deletion');
+          await _supabase.deleteBuild(buildId);
+          print('INFO: Build deletion synced to Supabase successfully');
+        } catch (e) {
+          print('WARNING: Online sync failed for delete, will retry later: $e');
+        }
+      } else {
+        print('INFO: Offline mode - deletion queued for sync when online');
+      }
+    } catch (e) {
+      print('ERROR: Failed to delete build: $e');
+      rethrow;
     }
   }
 

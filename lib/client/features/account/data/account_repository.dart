@@ -1,6 +1,7 @@
 // lib/features/account/data/account_repository.dart
 
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import '../domain/account_model.dart';
 import 'account_repository_supabase.dart';
 import '../../../core/repositories/base_repository.dart';
@@ -47,20 +48,35 @@ class AccountRepository extends BaseRepository {
     );
   }
 
-  /// Update user profile
+  /// Pick an image from gallery
+  Future<XFile?> pickImage(ImageSource source) async {
+    if (_isOnline) {
+      try {
+        return await _supabase.pickImage(source);
+      } catch (e) {
+        debugPrint('Failed to pick image: $e');
+      }
+    }
+    return null;
+  }
+
+  /// Update user profile with optional avatar
   Future<UserProfile> updateUserProfile({
     required String fullName,
     required String email,
     required String phone,
+    XFile? avatarFile,
   }) async {
     UserProfile updatedProfile;
 
     if (_isOnline) {
       try {
+        debugPrint('Updating profile online...');
         updatedProfile = await _supabase.updateUserProfile(
           fullName: fullName,
           email: email,
           phone: phone,
+          avatarFile: avatarFile,
         );
         _cachedProfile = updatedProfile;
 
@@ -72,13 +88,17 @@ class AccountRepository extends BaseRepository {
             'full_name': fullName,
             'email': email,
             'phone': phone,
+            'avatar_url': updatedProfile.avatarUrl,
             'updated_at': DateTime.now().millisecondsSinceEpoch,
           },
         );
 
+        debugPrint('Profile update successful. Avatar URL: ${updatedProfile.avatarUrl}');
         return updatedProfile;
-      } catch (e) {
+      } catch (e, stackTrace) {
         debugPrint('Failed to update profile in Supabase: $e');
+        debugPrint('STACKTRACE: $stackTrace');
+        rethrow;
       }
     }
 
@@ -93,6 +113,7 @@ class AccountRepository extends BaseRepository {
     );
 
     _cachedProfile = updatedProfile;
+    debugPrint('Profile updated locally (offline mode). Avatar: ${updatedProfile.avatarUrl}');
     return updatedProfile;
   }
 
