@@ -1,27 +1,25 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../app_theme.dart';
+import '../models/staff_profile_model.dart';
 
 class DashboardHeader extends StatelessWidget {
-  final String staffName;
-  final String branchName;
   final int notificationCount;
+  final int chatUnreadCount;
   final VoidCallback? onNotificationTap;
-  final VoidCallback? onAvatarTap;
+  final VoidCallback? onChatTap;
+  final VoidCallback? onMenuTap;
+  final VoidCallback? onProfileTap;
 
   const DashboardHeader({
     super.key,
-    this.staffName = 'Alex Rivers',
-    this.branchName = 'Downtown Flagship',
     this.notificationCount = 3,
+    this.chatUnreadCount = 0,
     this.onNotificationTap,
-    this.onAvatarTap,
+    this.onChatTap,
+    this.onMenuTap,
+    this.onProfileTap,
   });
-
-  String get _initials {
-    final parts = staffName.trim().split(' ');
-    if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}';
-    return staffName.isNotEmpty ? staffName[0] : 'S';
-  }
 
   String get _greeting {
     final hour = DateTime.now().hour;
@@ -32,6 +30,9 @@ class DashboardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = StaffProfileStore().profile;
+    final hasAvatar = profile.avatarBase64 != null;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
       decoration: const BoxDecoration(
@@ -42,81 +43,179 @@ class DashboardHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ── Avatar ──────────────────────────────────────
+          // ── Hamburger Menu ──────────────────────────────────
           GestureDetector(
-            onTap: onAvatarTap,
+            onTap: onMenuTap,
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceSecondary,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.menu_rounded,
+                  size: 20,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          // ── Avatar (tappable → Profile) ─────────────────────
+          GestureDetector(
+            onTap: onProfileTap,
             child: Container(
               width: 46,
               height: 46,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.primary, AppColors.primaryLight],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                gradient: hasAvatar
+                    ? null
+                    : const LinearGradient(
+                        colors: [AppColors.primary, AppColors.primaryLight],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                 borderRadius: BorderRadius.circular(14),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
                 ],
+                image: hasAvatar
+                    ? DecorationImage(
+                        image: MemoryImage(
+                          base64Decode(profile.avatarBase64!),
+                        ),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
               ),
-              child: Center(
-                child: Text(
-                  _initials,
-                  style: const TextStyle(
-                    color: AppColors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
+              child: hasAvatar
+                  ? null
+                  : Center(
+                      child: Text(
+                        profile.initials,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
             ),
           ),
           const SizedBox(width: 12),
-          // ── Name & Branch ────────────────────────────────
+          // ── Name & Branch & Staff ID (tappable → Profile) ──
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$_greeting,',
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textMuted,
+            child: GestureDetector(
+              onTap: onProfileTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$_greeting,',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textMuted,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 1),
-                Text(
-                  staffName,
-                  style: AppTextStyles.headingSmall,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: const BoxDecoration(
-                        color: AppColors.success,
-                        shape: BoxShape.circle,
-                      ),
+                  const SizedBox(height: 1),
+                  Text(
+                    profile.name,
+                    style: AppTextStyles.headingSmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    'ID: ${profile.staffId}',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textMuted,
+                      fontSize: 11,
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      branchName,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w500,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: const BoxDecoration(
+                          color: AppColors.success,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          profile.branch,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
+          const SizedBox(width: 8),
+          // ── Chat Icon ─────────────────────────────────────
+          GestureDetector(
+            onTap: onChatTap,
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceSecondary,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  const Center(
+                    child: Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      size: 20,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  if (chatUnreadCount > 0)
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: Container(
+                        width: 16,
+                        height: 16,
+                        decoration: const BoxDecoration(
+                          color: AppColors.error,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            chatUnreadCount > 9
+                                ? '9+'
+                                : '$chatUnreadCount',
+                            style: const TextStyle(
+                              color: AppColors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
           // ── Notification Bell ─────────────────────────────
           GestureDetector(
             onTap: onNotificationTap,

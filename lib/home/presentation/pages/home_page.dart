@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../satf/features/dashboard/models/customer_request_model.dart';
 import '../providers/home_provider.dart';
 import '../widgets/deals_section.dart';
 import '../widgets/featured_rigs_section.dart';
@@ -10,6 +11,61 @@ import '../widgets/promotion_banner.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
+
+  void _registerBuildRequest(BuildContext context) {
+    final store = CustomerRequestStore();
+    store.addRequest(
+      CustomerRequest(
+        id: 'REQ-${DateTime.now().millisecondsSinceEpoch % 10000}',
+        customerName: 'Guest',
+        type: RequestType.build,
+        description: 'Custom PC Build Request',
+        createdAt: DateTime.now(),
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: const Color(0xFF10B981),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 18),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Build Request Sent!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                  Text(
+                    'Staff will review your request shortly.',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.85),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+
+    context.go('/products');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +86,7 @@ class HomePage extends ConsumerWidget {
                 const SizedBox(height: 12),
                 HeroBanner(
                   onShopNow: () => context.go('/products'),
-                  onBuildPc: () => context.go('/products'),
+                  onBuildPc: () => _registerBuildRequest(context),
                 ),
                 const SizedBox(height: 18),
                 FeaturedRigsSection(
@@ -105,7 +161,7 @@ class HomePage extends ConsumerWidget {
             ),
             const SizedBox(width: 12),
             ElevatedButton(
-              onPressed: () => context.go('/products'),
+              onPressed: () => _registerBuildRequest(context),
               child: const Text('Start Build'),
             ),
           ],

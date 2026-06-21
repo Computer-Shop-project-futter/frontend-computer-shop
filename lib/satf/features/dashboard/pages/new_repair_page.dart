@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../../../admin/shared/component_store.dart';
 import '../models/recent_repair_model.dart';
 import '../app_theme.dart';
 
 class NewRepairPage extends StatefulWidget {
   /// Called with the newly created repair so the caller can update its list
   final void Function(RecentRepairModel repair)? onRepairCreated;
+  final String? initialCustomerName;
 
-  const NewRepairPage({super.key, this.onRepairCreated});
+  const NewRepairPage({super.key, this.onRepairCreated, this.initialCustomerName});
 
   @override
   State<NewRepairPage> createState() => _NewRepairPageState();
@@ -18,16 +20,21 @@ class _NewRepairPageState extends State<NewRepairPage> {
   final _deviceController = TextEditingController();
   final _issueController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialCustomerName != null) {
+      _customerController.text = widget.initialCustomerName!;
+    }
+  }
+
   bool _isSubmitting = false;
 
-  // Static device suggestions — replace with API lookup later
-  final List<String> _deviceSuggestions = [
-    'NexCore Pro X1',
-    'NexCore Tab Z',
-    'NexCore Hub Lite',
-    'NexCore Mini',
-    'Custom Build',
-  ];
+  // Device suggestions from admin component data
+  late final List<String> _deviceSuggestions = ComponentStore.items
+      .where((item) => item.isVisible)
+      .map((item) => item.name)
+      .toList();
 
   String? _selectedDevice;
 

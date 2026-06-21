@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import '../../../../admin/models/models.dart';
+import '../../../../admin/shared/component_store.dart';
 import '../models/recent_build_model.dart';
 import '../app_theme.dart';
 
-// ── Static parts catalogue — replace with API later ──────────────────────────
+// ── Helper: convert ComponentItem → _Part ────────────────────────────────────
+
+List<_Part> _partsFromCategory(ComponentCategory cat) {
+  return ComponentStore.items
+      .where((item) => item.category == cat && item.isVisible)
+      .map((item) {
+    final price = double.tryParse(
+          item.price.replaceAll(RegExp(r'[^\d.]'), ''),
+        ) ??
+        0;
+    return _Part(item.name, item.description ?? item.brand, price);
+  }).toList();
+}
 
 class _Part {
   final String name;
@@ -11,46 +25,13 @@ class _Part {
   const _Part(this.name, this.detail, this.price);
 }
 
-const _gpuList = [
-  _Part('RTX 4090', '24 GB GDDR6X • 450W', 1599),
-  _Part('RTX 4080 Super', '16 GB GDDR6X • 320W', 999),
-  _Part('RTX 4070', '12 GB GDDR6X • 200W', 599),
-  _Part('RX 7900 XTX', '24 GB GDDR6 • 355W', 949),
-  _Part('RX 6600', '8 GB GDDR6 • 132W', 239),
-  _Part('RTX 3060', '12 GB GDDR6 • 170W', 299),
-];
-
-const _cpuList = [
-  _Part('Intel i9-13900K', '24 Cores • 5.8 GHz Boost', 549),
-  _Part('Intel i7-13700K', '16 Cores • 5.4 GHz Boost', 349),
-  _Part('Ryzen 9 7950X', '16 Cores • 5.7 GHz Boost', 699),
-  _Part('Ryzen 7 7800X3D', '8 Cores • 5.0 GHz Boost', 449),
-  _Part('Ryzen 7 5800X', '8 Cores • 4.7 GHz Boost', 249),
-  _Part('Ryzen 5 5600X', '6 Cores • 4.6 GHz Boost', 149),
-];
-
-const _ramList = [
-  _Part('64 GB DDR5 6000', 'Corsair Vengeance • 2×32 GB', 189),
-  _Part('32 GB DDR5 5200', 'G.Skill Trident Z5 • 2×16 GB', 99),
-  _Part('32 GB DDR4 3600', 'Corsair Vengeance • 2×16 GB', 69),
-  _Part('16 GB DDR5 5200', 'Kingston Fury Beast • 2×8 GB', 59),
-  _Part('16 GB DDR4 3200', 'Crucial Ballistix • 2×8 GB', 39),
-];
-
-const _storageList = [
-  _Part('2 TB NVMe SSD', 'Samsung 990 Pro • 7450 MB/s', 189),
-  _Part('1 TB NVMe SSD', 'WD Black SN850X • 7300 MB/s', 99),
-  _Part('1 TB SATA SSD', 'Samsung 870 EVO • 560 MB/s', 79),
-  _Part('2 TB HDD', 'Seagate Barracuda • 7200 RPM', 55),
-  _Part('500 GB NVMe SSD', 'Crucial P3 Plus • 5000 MB/s', 49),
-];
-
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 class NewBuildPage extends StatefulWidget {
   final void Function(RecentBuildModel build)? onBuildCreated;
+  final String? initialCustomerName;
 
-  const NewBuildPage({super.key, this.onBuildCreated});
+  const NewBuildPage({super.key, this.onBuildCreated, this.initialCustomerName});
 
   @override
   State<NewBuildPage> createState() => _NewBuildPageState();
@@ -58,6 +39,19 @@ class NewBuildPage extends StatefulWidget {
 
 class _NewBuildPageState extends State<NewBuildPage> {
   final _titleController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialCustomerName != null) {
+      _titleController.text = '${widget.initialCustomerName}\'s Build';
+    }
+  }
+
+  final List<_Part> _gpuList = _partsFromCategory(ComponentCategory.gpu);
+  final List<_Part> _cpuList = _partsFromCategory(ComponentCategory.cpu);
+  final List<_Part> _ramList = _partsFromCategory(ComponentCategory.ram);
+  final List<_Part> _storageList = _partsFromCategory(ComponentCategory.storage);
 
   _Part? _selectedGpu;
   _Part? _selectedCpu;
