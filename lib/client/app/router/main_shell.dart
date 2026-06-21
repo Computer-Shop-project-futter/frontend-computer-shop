@@ -43,12 +43,10 @@ class MainShell extends StatelessWidget {
             AppMainHeader(
               dark: true,
               showSearch: true,
-              showFavorites: true,
-              showCart: true,
+              showFavorites: false,
+              showCart: false,
               showChat: true,
-              onSearchPressed: () => context.go('/products'),
-              onCartPressed: () => context.go('/cart'),
-              onFavoritesPressed: () => context.go('/wishlist'),
+              onSearchPressed: () => _showSearchModal(context),
               onChatPressed: () => context.go('/chat'),
             ),
             // Page content

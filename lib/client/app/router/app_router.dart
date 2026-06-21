@@ -114,7 +114,9 @@ class AppRouter {
           // Products listing
           GoRoute(
             path: ProductRoutes.products,
-            builder: (_, __) => const ProductListingPage(),
+            builder: (context, state) => ProductListingPage(
+              initialSearchQuery: state.uri.queryParameters['search'],
+            ),
           ),
 
           // Product Detail (inside shell with persistent header/footer)

@@ -10,11 +10,42 @@ import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/product_page_chrome.dart';
 import '../widgets/product_card.dart';
 
-class ProductListingPage extends ConsumerWidget {
-  const ProductListingPage({super.key});
+class ProductListingPage extends ConsumerStatefulWidget {
+  final String? initialSearchQuery;
+
+  const ProductListingPage({super.key, this.initialSearchQuery});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductListingPage> createState() => _ProductListingPageState();
+}
+
+class _ProductListingPageState extends ConsumerState<ProductListingPage> {
+  late final TextEditingController _searchController;
+  bool _appliedInitialQuery = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController(text: widget.initialSearchQuery?.trim() ?? '');
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_appliedInitialQuery && widget.initialSearchQuery?.trim().isNotEmpty == true) {
+      _appliedInitialQuery = true;
+      ref.read(productsProvider.notifier).applyFilter(
+            ref.read(productsProvider).value?.filters.copyWith(
+                  searchQuery: widget.initialSearchQuery?.trim(),
+                ) ??
+                ProductFilters(searchQuery: widget.initialSearchQuery?.trim()),
+          );
+    }
     final productsState = ref.watch(productsProvider);
     final compareIds = ref.watch(compareProvider);
 
@@ -259,10 +290,30 @@ class ProductListingPage extends ConsumerWidget {
   }
 }
 
-class _SearchAndFilters extends StatelessWidget {
+class _SearchAndFilters extends ConsumerStatefulWidget {
   const _SearchAndFilters({required this.onFilterTap});
 
   final VoidCallback? onFilterTap;
+
+  @override
+  ConsumerState<_SearchAndFilters> createState() => _SearchAndFiltersState();
+}
+
+class _SearchAndFiltersState extends ConsumerState<_SearchAndFilters> {
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialQuery = ref.read(productsProvider).value?.filters.searchQuery ?? '';
+    _searchController = TextEditingController(text: initialQuery);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -272,6 +323,9 @@ class _SearchAndFilters extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
+            controller: _searchController,
+            textInputAction: TextInputAction.search,
+            onSubmitted: _applySearch,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search, size: 18),
               hintText: 'Search products...',
@@ -283,20 +337,34 @@ class _SearchAndFilters extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,
               ),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                onPressed: () => _applySearch(_searchController.text),
+              ),
             ),
           ),
           const SizedBox(height: 10),
           Wrap(
             spacing: 8,
             children: [
-              _FilterChip(label: 'LAPTOPS', onTap: onFilterTap),
-              _FilterChip(label: 'UNDER \$1000', onTap: onFilterTap),
-              _FilterChip(label: 'NVIDIA', onTap: onFilterTap),
+              _FilterChip(label: 'LAPTOPS', onTap: widget.onFilterTap),
+              _FilterChip(label: 'UNDER \$1000', onTap: widget.onFilterTap),
+              _FilterChip(label: 'NVIDIA', onTap: widget.onFilterTap),
             ],
           ),
         ],
       ),
     );
+  }
+
+  void _applySearch(String value) {
+    final query = value.trim();
+    ref.read(productsProvider.notifier).applyFilter(
+          ref.read(productsProvider).value?.filters.copyWith(
+                searchQuery: query.isEmpty ? null : query,
+              ) ??
+              ProductFilters(searchQuery: query.isEmpty ? null : query),
+        );
   }
 }
 

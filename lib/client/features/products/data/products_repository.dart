@@ -14,6 +14,7 @@ class ProductFilters {
   final double? maxPrice;
   final List<String> categoryIds;
   final List<String> brandIds;
+  final String? searchQuery;
 
   const ProductFilters({
     this.featuredOnly = false,
@@ -23,6 +24,7 @@ class ProductFilters {
     this.maxPrice,
     this.categoryIds = const [],
     this.brandIds = const [],
+    this.searchQuery,
   });
 
   ProductFilters copyWith({
@@ -33,6 +35,7 @@ class ProductFilters {
     double? maxPrice,
     List<String>? categoryIds,
     List<String>? brandIds,
+    String? searchQuery,
   }) {
     return ProductFilters(
       featuredOnly: featuredOnly ?? this.featuredOnly,
@@ -42,6 +45,7 @@ class ProductFilters {
       maxPrice: maxPrice ?? this.maxPrice,
       categoryIds: categoryIds ?? this.categoryIds,
       brandIds: brandIds ?? this.brandIds,
+      searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 }

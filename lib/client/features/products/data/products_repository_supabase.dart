@@ -42,6 +42,12 @@ class ProductsRepositorySupabase {
       if (filters.brandIds.isNotEmpty) {
         query = query.inFilter('brand_id', filters.brandIds);
       }
+      final searchQuery = filters.searchQuery?.trim();
+      if (searchQuery?.isNotEmpty == true) {
+        query = query.or(
+          'name.ilike.%$searchQuery%,short_description.ilike.%$searchQuery%',
+        );
+      }
 
       final data = await query
           .order('created_at', ascending: false)
@@ -101,20 +107,20 @@ class ProductsRepositorySupabase {
           .map((json) => ProductSpecModel.fromJson(json as Map<String, dynamic>))
           .toList();
 
-      final benchmarksData = await _supabase.client
+        final benchmarksData = await _supabase.client
           .from('product_benchmarks')
           .select('*')
           .eq('product_id', productId)
-          .order('name');
+          .order('metric_key');
       final benchmarks = (benchmarksData as List)
           .map((json) => ProductBenchmarkModel.fromJson(json as Map<String, dynamic>))
           .toList();
 
-      final configData = await _supabase.client
+        final configData = await _supabase.client
           .from('product_config_options')
           .select('*')
           .eq('product_id', productId)
-          .order('name', ascending: true);
+          .order('option_label', ascending: true);
       final configOptions = (configData as List)
           .map((json) => ProductConfigOptionModel.fromJson(json as Map<String, dynamic>))
           .toList();

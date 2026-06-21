@@ -97,6 +97,11 @@ class ProductsRepositorySQLite {
         whereClause += ' AND base_price <= ?';
         whereArgs.add(filters.maxPrice!);
       }
+      final searchQuery = filters.searchQuery?.trim();
+      if (searchQuery?.isNotEmpty == true) {
+        whereClause += ' AND (name LIKE ? OR short_description LIKE ?)';
+        whereArgs.addAll(['%$searchQuery%', '%$searchQuery%']);
+      }
     }
     
     final results = await db.query(

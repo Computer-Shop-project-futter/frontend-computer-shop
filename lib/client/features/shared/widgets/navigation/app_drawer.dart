@@ -239,7 +239,7 @@ class _AppDrawerState extends ConsumerState<AppDrawer> {
           } else if (id == 'coupon') {
             context.go('/coupon');
           } else if (id == 'orders') {
-            context.go('/orders');
+            context.go('/account');
           } else if (id == 'chat') {
             context.go('/chat');
           }
