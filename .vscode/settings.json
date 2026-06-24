@@ -1,4 +1,5 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
-    "files.autoSave": "onWindowChange"
+    "files.autoSave": "onWindowChange",
+    "cmake.ignoreCMakeListsMissing": true
 }

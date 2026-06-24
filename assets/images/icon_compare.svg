@@ -1,0 +1,5 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect x="2" y="10" width="40" height="40" rx="8" fill="#FFFFFF" stroke="#2A66FF" stroke-width="2"/>
+  <rect x="20" y="2" width="40" height="40" rx="8" fill="#EAF1FF" stroke="#2A66FF" stroke-width="1.2"/>
+  <text x="8" y="36" font-family="Inter, Arial, sans-serif" font-size="10" fill="#2A66FF" font-weight="700">PC</text>
+</svg>

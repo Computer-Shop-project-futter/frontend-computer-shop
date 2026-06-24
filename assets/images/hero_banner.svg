@@ -1,0 +1,21 @@
+<svg width="1080" height="420" viewBox="0 0 1080 420" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#10213B"/>
+      <stop offset="1" stop-color="#2A66FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="420" fill="url(#g)" rx="24"/>
+  <g transform="translate(56,56)">
+    <rect x="0" y="0" width="360" height="308" rx="18" fill="#FFFFFF" opacity="0.06"/>
+    <text x="20" y="70" font-family="Inter, Arial, sans-serif" font-size="48" fill="#FFFFFF" font-weight="800">G14-TECH</text>
+    <text x="20" y="120" font-family="Inter, Arial, sans-serif" font-size="20" fill="#E6F0FF">Discover powerful desktops & laptops</text>
+    <g transform="translate(420,40)">
+      <rect x="0" y="0" width="520" height="280" rx="18" fill="#FFFFFF" opacity="0.06"/>
+      <g transform="translate(36,20)" fill="#EAF1FF">
+        <rect x="0" y="30" width="360" height="180" rx="12"/>
+        <rect x="20" y="70" width="320" height="100" rx="8" fill="#FFFFFF" opacity="0.06"/>
+      </g>
+    </g>
+  </g>
+</svg>

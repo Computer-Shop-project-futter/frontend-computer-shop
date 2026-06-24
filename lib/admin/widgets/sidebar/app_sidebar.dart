@@ -81,43 +81,33 @@ class _BrandHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _G14Badge(),
-          const SizedBox(width: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppTheme.accent,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Text(
+              'G14',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
           const Text(
-            'G14',
+            'Admin',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.2,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _G14Badge extends StatelessWidget {
-  final double fontSize;
-  const _G14Badge({this.fontSize = 11});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppTheme.accent,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        'G14',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: fontSize,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
-        ),
       ),
     );
   }

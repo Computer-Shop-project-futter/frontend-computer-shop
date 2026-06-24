@@ -1,0 +1,5 @@
+<svg width="160" height="120" viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+  <rect width="160" height="120" rx="8" fill="#F3F6FA"/>
+  <rect x="16" y="16" width="128" height="72" rx="6" fill="#FFFFFF" stroke="#E3E9F5"/>
+  <text x="32" y="92" font-family="Inter, Arial, sans-serif" font-size="12" fill="#6B7891">Thumbnail</text>
+</svg>
