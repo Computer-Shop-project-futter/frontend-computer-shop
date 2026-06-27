@@ -1,4 +1,9 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
+<<<<<<< HEAD
     "files.autoSave": "onWindowChange"
+=======
+    "files.autoSave": "onWindowChange",
+    "cmake.ignoreCMakeListsMissing": true
+>>>>>>> 4bf4199 (update code in client and admin)
 }

@@ -3,15 +3,30 @@ import '../models/dashboard_summary_model.dart';
 import '../models/recent_repair_model.dart';
 import '../models/recent_chat_model.dart';
 import '../models/recent_build_model.dart';
+<<<<<<< HEAD
 import '../services/dashboard_service.dart';
+=======
+import '../models/customer_request_model.dart';
+import '../services/dashboard_service.dart';
+import 'package:computer_shop/admin/models/models.dart';
+>>>>>>> 4bf4199 (update code in client and admin)
 
 enum DashboardLoadState { idle, loading, loaded, error }
 
 class DashboardProvider extends ChangeNotifier {
   final DashboardService _service;
+<<<<<<< HEAD
 
   DashboardProvider({DashboardService? service})
       : _service = service ?? DashboardService();
+=======
+  final CustomerRequestStore _requestStore = CustomerRequestStore();
+
+  DashboardProvider({DashboardService? service})
+      : _service = service ?? DashboardService() {
+    _requestStore.addListener(_onRequestsChanged);
+  }
+>>>>>>> 4bf4199 (update code in client and admin)
 
   DashboardLoadState _state = DashboardLoadState.idle;
   String? _errorMessage;
@@ -20,6 +35,12 @@ class DashboardProvider extends ChangeNotifier {
   List<RecentRepairModel> _repairs = [];
   List<RecentChatModel> _chats = [];
   List<RecentBuildModel> _builds = [];
+<<<<<<< HEAD
+=======
+  List<FeedbackItem> _feedbacks = [];
+  List<PromotionItem> _promotions = [];
+  List<CouponModel> _coupons = [];
+>>>>>>> 4bf4199 (update code in client and admin)
 
   // ── Getters ──────────────────────────────────────────────
   DashboardLoadState get state => _state;
@@ -28,12 +49,38 @@ class DashboardProvider extends ChangeNotifier {
   List<RecentRepairModel> get repairs => _repairs;
   List<RecentChatModel> get chats => _chats;
   List<RecentBuildModel> get builds => _builds;
+<<<<<<< HEAD
   bool get isLoading => _state == DashboardLoadState.loading;
 
+=======
+  List<FeedbackItem> get feedbacks => _feedbacks;
+  List<PromotionItem> get promotions => _promotions;
+  List<CouponModel> get coupons => _coupons;
+  bool get isLoading => _state == DashboardLoadState.loading;
+
+  /// Number of customer requests that are still pending
+  int get pendingRequestCount =>
+      _requestStore.pendingRequests.length;
+
+  /// Combined notification count (chats + customer requests)
+  int get totalNotificationCount =>
+      _chats.where((c) => !c.isRead).length +
+      _requestStore.pendingRequests.length;
+
+  void _onRequestsChanged() {
+    notifyListeners();
+  }
+
+>>>>>>> 4bf4199 (update code in client and admin)
   // ── Actions ───────────────────────────────────────────────
   Future<void> loadDashboard() async {
     _state = DashboardLoadState.loading;
     _errorMessage = null;
+<<<<<<< HEAD
+=======
+    // Load mock customer requests so staff can see them
+    _requestStore.loadMockData();
+>>>>>>> 4bf4199 (update code in client and admin)
     notifyListeners();
 
     try {
@@ -42,12 +89,24 @@ class DashboardProvider extends ChangeNotifier {
         _service.fetchRecentRepairs(),
         _service.fetchRecentChats(),
         _service.fetchRecentBuilds(),
+<<<<<<< HEAD
+=======
+        _service.fetchRecentFeedbacks(),
+        _service.fetchActivePromotions(),
+        _service.fetchActiveCoupons(),
+>>>>>>> 4bf4199 (update code in client and admin)
       ]);
 
       _summary = results[0] as DashboardSummaryModel;
       _repairs = results[1] as List<RecentRepairModel>;
       _chats = results[2] as List<RecentChatModel>;
       _builds = results[3] as List<RecentBuildModel>;
+<<<<<<< HEAD
+=======
+      _feedbacks = results[4] as List<FeedbackItem>;
+      _promotions = results[5] as List<PromotionItem>;
+      _coupons = results[6] as List<CouponModel>;
+>>>>>>> 4bf4199 (update code in client and admin)
       _state = DashboardLoadState.loaded;
     } catch (e) {
       _errorMessage = e.toString();

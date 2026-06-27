@@ -3,9 +3,18 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import '../../data/app_data.dart';
 import '../../data/app_theme.dart';
 import '../../models/models.dart';
+=======
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../data/app_data.dart';
+import '../../data/app_theme.dart';
+import '../../models/models.dart';
+import 'package:computer_shop/auth/presentation/providers/auth_provider.dart';
+>>>>>>> 4bf4199 (update code in client and admin)
 
 class AppSidebar extends StatelessWidget {
   final String activePage;
@@ -81,6 +90,7 @@ class _BrandHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
+<<<<<<< HEAD
           _G14Badge(),
           const SizedBox(width: 10),
           const Text(
@@ -90,6 +100,32 @@ class _BrandHeader extends StatelessWidget {
               fontSize: 15,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
+=======
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppTheme.accent,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Text(
+              'G14',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            'Admin',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+>>>>>>> 4bf4199 (update code in client and admin)
             ),
           ),
         ],
@@ -98,6 +134,7 @@ class _BrandHeader extends StatelessWidget {
   }
 }
 
+<<<<<<< HEAD
 class _G14Badge extends StatelessWidget {
   final double fontSize;
   const _G14Badge({this.fontSize = 11});
@@ -123,6 +160,8 @@ class _G14Badge extends StatelessWidget {
   }
 }
 
+=======
+>>>>>>> 4bf4199 (update code in client and admin)
 // ── User tile ─────────────────────────────────
 class _UserTile extends StatelessWidget {
   final AdminUser user;
@@ -312,6 +351,7 @@ class _NavIcon extends StatelessWidget {
 }
 
 // ── Terminate session button ──────────────────
+<<<<<<< HEAD
 class _TerminateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -319,6 +359,15 @@ class _TerminateButton extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
       child: InkWell(
         onTap: () {},
+=======
+class _TerminateButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
+      child: InkWell(
+        onTap: () => _confirmLogout(context, ref),
+>>>>>>> 4bf4199 (update code in client and admin)
         borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -346,4 +395,43 @@ class _TerminateButton extends StatelessWidget {
       ),
     );
   }
+<<<<<<< HEAD
+=======
+
+  Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1E2E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: const Text(
+          'Terminate Session',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: const Text(
+          'Are you sure you want to log out of the admin dashboard?',
+          style: TextStyle(color: AppTheme.sidebarMuted),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            child: const Text('Log out'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      await ref.read(authProvider.notifier).logout();
+      if (context.mounted) {
+        context.go('/login');
+      }
+    }
+  }
+>>>>>>> 4bf4199 (update code in client and admin)
 }

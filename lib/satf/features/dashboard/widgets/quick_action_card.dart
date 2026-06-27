@@ -65,7 +65,11 @@ class _QuickActionCardState extends State<QuickActionCard>
             border: Border.all(color: AppColors.border),
             boxShadow: [
               BoxShadow(
+<<<<<<< HEAD
                 color: Colors.black.withOpacity(0.03),
+=======
+                color: Colors.black.withValues(alpha: 0.03),
+>>>>>>> 4bf4199 (update code in client and admin)
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -117,8 +121,11 @@ class QuickActionsRow extends StatelessWidget {
           AppColors.primarySoft, 'build_pc'),
       _Action('Add Repair', Icons.build_outlined, AppColors.warning,
           AppColors.warningSoft, 'add_repair'),
+<<<<<<< HEAD
       _Action('Open Chat', Icons.chat_bubble_outline_rounded, AppColors.success,
           AppColors.successSoft, 'open_chat'),
+=======
+>>>>>>> 4bf4199 (update code in client and admin)
       _Action('Customers', Icons.people_outline_rounded, AppColors.primaryLight,
           AppColors.primarySoft, 'customers'),
     ];

@@ -166,7 +166,11 @@ class _MetricsGrid extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
+<<<<<<< HEAD
           childAspectRatio: 1.8,
+=======
+          childAspectRatio: 1.35,
+>>>>>>> 4bf4199 (update code in client and admin)
           crossAxisSpacing: 1,
           mainAxisSpacing: 1,
         ),

@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import '../models/recent_build_model.dart';
 import '../app_theme.dart';
 
 // ── Static parts catalogue — replace with API later ──────────────────────────
+=======
+import '../../../../admin/models/models.dart';
+import '../../../../admin/shared/component_store.dart';
+import '../models/recent_build_model.dart';
+import '../app_theme.dart';
+
+// ── Helper: convert ComponentItem → _Part ────────────────────────────────────
+
+List<_Part> _partsFromCategory(ComponentCategory cat) {
+  return ComponentStore.items
+      .where((item) => item.category == cat && item.isVisible)
+      .map((item) {
+    final price = double.tryParse(
+          item.price.replaceAll(RegExp(r'[^\d.]'), ''),
+        ) ??
+        0;
+    return _Part(item.name, item.description ?? item.brand, price);
+  }).toList();
+}
+>>>>>>> 4bf4199 (update code in client and admin)
 
 class _Part {
   final String name;
@@ -11,6 +32,7 @@ class _Part {
   const _Part(this.name, this.detail, this.price);
 }
 
+<<<<<<< HEAD
 const _gpuList = [
   _Part('RTX 4090', '24 GB GDDR6X • 450W', 1599),
   _Part('RTX 4080 Super', '16 GB GDDR6X • 320W', 999),
@@ -45,12 +67,20 @@ const _storageList = [
   _Part('500 GB NVMe SSD', 'Crucial P3 Plus • 5000 MB/s', 49),
 ];
 
+=======
+>>>>>>> 4bf4199 (update code in client and admin)
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 class NewBuildPage extends StatefulWidget {
   final void Function(RecentBuildModel build)? onBuildCreated;
+<<<<<<< HEAD
 
   const NewBuildPage({super.key, this.onBuildCreated});
+=======
+  final String? initialCustomerName;
+
+  const NewBuildPage({super.key, this.onBuildCreated, this.initialCustomerName});
+>>>>>>> 4bf4199 (update code in client and admin)
 
   @override
   State<NewBuildPage> createState() => _NewBuildPageState();
@@ -59,6 +89,22 @@ class NewBuildPage extends StatefulWidget {
 class _NewBuildPageState extends State<NewBuildPage> {
   final _titleController = TextEditingController();
 
+<<<<<<< HEAD
+=======
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialCustomerName != null) {
+      _titleController.text = '${widget.initialCustomerName}\'s Build';
+    }
+  }
+
+  final List<_Part> _gpuList = _partsFromCategory(ComponentCategory.gpu);
+  final List<_Part> _cpuList = _partsFromCategory(ComponentCategory.cpu);
+  final List<_Part> _ramList = _partsFromCategory(ComponentCategory.ram);
+  final List<_Part> _storageList = _partsFromCategory(ComponentCategory.storage);
+
+>>>>>>> 4bf4199 (update code in client and admin)
   _Part? _selectedGpu;
   _Part? _selectedCpu;
   _Part? _selectedRam;

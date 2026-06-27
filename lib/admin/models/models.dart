@@ -264,6 +264,229 @@ class AdminUser {
   });
 }
 
+<<<<<<< HEAD
+=======
+// ── Feedback ────────────────────────────────────
+
+enum FeedbackStatus { newFeedback, inReview, resolved }
+
+extension FeedbackStatusX on FeedbackStatus {
+  String get label {
+    switch (this) {
+      case FeedbackStatus.newFeedback:
+        return 'New';
+      case FeedbackStatus.inReview:
+        return 'In Review';
+      case FeedbackStatus.resolved:
+        return 'Resolved';
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case FeedbackStatus.newFeedback:
+        return const Color(0xFFEF4444);
+      case FeedbackStatus.inReview:
+        return const Color(0xFFF59E0B);
+      case FeedbackStatus.resolved:
+        return const Color(0xFF10B981);
+    }
+  }
+}
+
+class FeedbackItem {
+  final String id;
+  final String customerName;
+  final String message;
+  final int rating;
+  final String? adminReply;
+  final FeedbackStatus status;
+  final DateTime createdAt;
+
+  const FeedbackItem({
+    required this.id,
+    required this.customerName,
+    required this.message,
+    required this.rating,
+    this.adminReply,
+    required this.status,
+    required this.createdAt,
+  });
+
+  String get customerEmail => '$customerName@example.com';
+  DateTime get submittedAt => createdAt;
+
+  FeedbackItem copyWith({
+    String? id,
+    String? customerName,
+    String? message,
+    int? rating,
+    String? adminReply,
+    FeedbackStatus? status,
+    DateTime? createdAt,
+  }) {
+    return FeedbackItem(
+      id: id ?? this.id,
+      customerName: customerName ?? this.customerName,
+      message: message ?? this.message,
+      rating: rating ?? this.rating,
+      adminReply: adminReply ?? this.adminReply,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+}
+
+class FeedbackData {
+  static List<FeedbackItem> get seed => [
+        FeedbackItem(
+          id: 'fb1',
+          customerName: 'Sarah Johnson',
+          message: 'Great service! My laptop was fixed within 24 hours.',
+          rating: 5,
+          status: FeedbackStatus.newFeedback,
+          createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+        ),
+        FeedbackItem(
+          id: 'fb2',
+          customerName: 'Mike Chen',
+          message: 'The custom build exceeded my expectations. Fast delivery too.',
+          rating: 5,
+          adminReply: 'Thank you Mike! We appreciate your business.',
+          status: FeedbackStatus.inReview,
+          createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        ),
+        FeedbackItem(
+          id: 'fb3',
+          customerName: 'Emily Davis',
+          message: 'Had some issues with the initial setup, but support was helpful.',
+          rating: 3,
+          adminReply: 'Sorry for the trouble Emily. We\'ve noted this for improvement.',
+          status: FeedbackStatus.resolved,
+          createdAt: DateTime.now().subtract(const Duration(days: 3)),
+        ),
+      ];
+}
+
+// ── Promotion ───────────────────────────────────
+
+enum PromotionType { banner, discount, newArrival }
+
+extension PromotionTypeX on PromotionType {
+  String get label {
+    switch (this) {
+      case PromotionType.banner:
+        return 'BANNER';
+      case PromotionType.discount:
+        return 'DISCOUNT';
+      case PromotionType.newArrival:
+        return 'NEW ARRIVAL';
+    }
+  }
+
+  Color get badgeColor {
+    switch (this) {
+      case PromotionType.banner:
+        return const Color(0xFF3B82F6);
+      case PromotionType.discount:
+        return const Color(0xFFEF4444);
+      case PromotionType.newArrival:
+        return const Color(0xFF10B981);
+    }
+  }
+}
+
+class PromotionItem {
+  final String id;
+  final String title;
+  final String subtitle;
+  final PromotionType type;
+  final DateTime startDate;
+  final DateTime endDate;
+  final bool isActive;
+  final String? imagePath;
+
+  const PromotionItem({
+    required this.id,
+    required this.title,
+    required this.subtitle,
+    required this.type,
+    required this.startDate,
+    required this.endDate,
+    required this.isActive,
+    this.imagePath,
+  });
+
+  String get statusLabel => isActive ? 'Active' : 'Inactive';
+  Color get statusColor => isActive ? const Color(0xFF10B981) : const Color(0xFF6B7280);
+  String get dateRange {
+    String fmt(DateTime d) =>
+        '${_mon(d.month)} ${d.day.toString().padLeft(2, '0')} — '
+        '${_mon(endDate.month)} ${endDate.day.toString().padLeft(2, '0')}, ${endDate.year}';
+    return fmt(startDate);
+  }
+
+  static String _mon(int m) => const [
+        '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ][m];
+
+  PromotionItem copyWith({
+    String? id,
+    String? title,
+    String? subtitle,
+    PromotionType? type,
+    DateTime? startDate,
+    DateTime? endDate,
+    bool? isActive,
+    String? imagePath,
+  }) {
+    return PromotionItem(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      type: type ?? this.type,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      isActive: isActive ?? this.isActive,
+      imagePath: imagePath ?? this.imagePath,
+    );
+  }
+}
+
+class PromotionData {
+  static List<PromotionItem> get seed => [
+        PromotionItem(
+          id: 'p1',
+          title: 'Summer GPU Blowout',
+          subtitle: 'Up to 30% off on select graphics cards',
+          type: PromotionType.banner,
+          startDate: DateTime.now().subtract(const Duration(days: 5)),
+          endDate: DateTime.now().add(const Duration(days: 25)),
+          isActive: true,
+        ),
+        PromotionItem(
+          id: 'p2',
+          title: 'Back to School Bundle',
+          subtitle: 'Save \$100 on student PC bundles',
+          type: PromotionType.discount,
+          startDate: DateTime.now().subtract(const Duration(days: 10)),
+          endDate: DateTime.now().add(const Duration(days: 20)),
+          isActive: true,
+        ),
+        PromotionItem(
+          id: 'p3',
+          title: 'New Ryzen 9000 Series',
+          subtitle: 'Now in stock - Pre-order today',
+          type: PromotionType.newArrival,
+          startDate: DateTime.now(),
+          endDate: DateTime.now().add(const Duration(days: 14)),
+          isActive: false,
+        ),
+      ];
+}
+
+>>>>>>> 4bf4199 (update code in client and admin)
 enum ComponentCategory { all, cpu, gpu, ram, storage, mb }
  
 extension ComponentCategoryX on ComponentCategory {

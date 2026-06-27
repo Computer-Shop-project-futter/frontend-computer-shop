@@ -11,12 +11,21 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+<<<<<<< HEAD
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
+=======
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    kotlin {
+        jvmToolchain(21)
+>>>>>>> 4bf4199 (update code in client and admin)
     }
 
     defaultConfig {

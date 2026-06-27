@@ -11,8 +11,14 @@ class _ChatMessage {
 
 class ChatConversationPage extends StatefulWidget {
   final RecentChatModel chat;
+<<<<<<< HEAD
 
   const ChatConversationPage({super.key, required this.chat});
+=======
+  final VoidCallback? onChatOpened;
+
+  const ChatConversationPage({super.key, required this.chat, this.onChatOpened});
+>>>>>>> 4bf4199 (update code in client and admin)
 
   @override
   State<ChatConversationPage> createState() => _ChatConversationPageState();
@@ -28,6 +34,11 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
+=======
+    // Notify that the chat was opened so unread count decreases
+    widget.onChatOpened?.call();
+>>>>>>> 4bf4199 (update code in client and admin)
     final now = DateTime.now();
     // Static starter messages — replace with API WebSocket/polling later
     _messages = [

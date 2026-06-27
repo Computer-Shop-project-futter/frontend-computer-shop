@@ -1,23 +1,46 @@
+<<<<<<< HEAD
 import 'package:flutter/material.dart';
 
 import '../app_theme.dart';
 import '../models/recent_chat_model.dart';
 import '../providers/dashboard_provider.dart';
+=======
+import 'package:computer_shop/admin/models/models.dart';
+import 'package:flutter/material.dart';
+import '../app_theme.dart';
+import '../providers/dashboard_provider.dart';
+import '../models/staff_profile_model.dart';
+>>>>>>> 4bf4199 (update code in client and admin)
 
 import '../widgets/activity_overview_card.dart';
 import '../widgets/dashboard_header.dart';
 import '../widgets/dashboard_section_title.dart';
 import '../widgets/quick_action_card.dart';
 import '../widgets/recent_build_card.dart';
+<<<<<<< HEAD
 import '../widgets/recent_chat_card.dart';
 import '../widgets/recent_repair_card.dart';
 import '../widgets/statistics_grid.dart';
 
 import 'chat_conversation_page.dart';
+=======
+import '../widgets/recent_repair_card.dart';
+import '../widgets/statistics_grid.dart';
+import '../widgets/sidebar_navigation.dart';
+
+import 'all_messages_page.dart';
+>>>>>>> 4bf4199 (update code in client and admin)
 import 'new_build_page.dart';
 import 'new_repair_page.dart';
 import 'build_detail_page.dart';
 import 'repair_detail_page.dart';
+<<<<<<< HEAD
+=======
+import 'customers_page.dart';
+import 'all_builds_page.dart';
+import 'all_repairs_page.dart';
+import 'profile_page.dart';
+>>>>>>> 4bf4199 (update code in client and admin)
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -28,21 +51,37 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   late final DashboardProvider _provider;
+<<<<<<< HEAD
+=======
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _profileStore = StaffProfileStore();
+>>>>>>> 4bf4199 (update code in client and admin)
 
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
 
     _provider = DashboardProvider();
     _provider.loadDashboard();
+=======
+    _provider = DashboardProvider();
+    _provider.loadDashboard();
+    _profileStore.addListener(_onProfileChanged);
+>>>>>>> 4bf4199 (update code in client and admin)
   }
 
   @override
   void dispose() {
+<<<<<<< HEAD
+=======
+    _profileStore.removeListener(_onProfileChanged);
+>>>>>>> 4bf4199 (update code in client and admin)
     _provider.dispose();
     super.dispose();
   }
 
+<<<<<<< HEAD
   // ─────────────────────────────────────────────
   // SnackBar Helper
   // ─────────────────────────────────────────────
@@ -74,6 +113,11 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
     );
+=======
+  void _onProfileChanged() {
+    // Rebuild the header when profile is updated (e.g., name, avatar)
+    setState(() {});
+>>>>>>> 4bf4199 (update code in client and admin)
   }
 
   // ─────────────────────────────────────────────
@@ -100,6 +144,7 @@ class _DashboardPageState extends State<DashboardPage> {
         );
         break;
 
+<<<<<<< HEAD
       case 'open_chat':
         ScaffoldMessenger.of(context).showSnackBar(
           _snack(
@@ -114,6 +159,13 @@ class _DashboardPageState extends State<DashboardPage> {
           _snack(
             'Opening customers...',
             Icons.people_outline_rounded,
+=======
+      case 'customers':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const CustomersPage(),
+>>>>>>> 4bf4199 (update code in client and admin)
           ),
         );
         break;
@@ -121,6 +173,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   // ─────────────────────────────────────────────
+<<<<<<< HEAD
   // Open Chat
   // ─────────────────────────────────────────────
 
@@ -132,15 +185,97 @@ class _DashboardPageState extends State<DashboardPage> {
       MaterialPageRoute(
         builder: (_) => ChatConversationPage(
           chat: chat,
+=======
+  // Add Options Bottom Sheet
+  // ─────────────────────────────────────────────
+
+  void _showAddOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+        decoration: const BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            Container(
+              width: 36,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            _OptionTile(
+              icon: Icons.computer_outlined,
+              iconColor: AppColors.primary,
+              bgColor: AppColors.primarySoft,
+              title: 'New PC Build',
+              subtitle: 'Create a custom PC build for a customer',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const NewBuildPage()),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            _OptionTile(
+              icon: Icons.build_outlined,
+              iconColor: AppColors.warning,
+              bgColor: AppColors.warningSoft,
+              title: 'New Repair',
+              subtitle: 'Log a repair ticket for a customer',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const NewRepairPage()),
+                );
+              },
+            ),
+          ],
+>>>>>>> 4bf4199 (update code in client and admin)
         ),
       ),
     );
   }
 
+<<<<<<< HEAD
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+=======
+  int get _chatUnreadCount =>
+      _provider.chats.where((c) => !c.isRead).length;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: AppColors.background,
+      drawer: SidebarNavigation(provider: _provider),
+
+      // ── FAB: Quick Add (bottom-right for thumb reach) ──
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddOptions(context),
+        backgroundColor: AppColors.primary,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Icon(Icons.add_rounded, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+>>>>>>> 4bf4199 (update code in client and admin)
 
       body: AnimatedBuilder(
         animation: _provider,
@@ -205,6 +340,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 pinned: true,
                 delegate: _HeaderDelegate(
                   DashboardHeader(
+<<<<<<< HEAD
                     staffName: 'Alex Rivers',
                     branchName: 'Downtown Flagship',
                     notificationCount: 3,
@@ -214,6 +350,34 @@ class _DashboardPageState extends State<DashboardPage> {
                         _snack(
                           'Notifications',
                           Icons.notifications_outlined,
+=======
+                    notificationCount: _provider.pendingRequestCount,
+                    chatUnreadCount: _chatUnreadCount,
+                    onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
+                    onChatTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AllMessagesPage(
+                            provider: _provider,
+                          ),
+                        ),
+                      );
+                    },
+                    onNotificationTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CustomersPage(),
+                        ),
+                      );
+                    },
+                    onProfileTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ProfilePage(),
+>>>>>>> 4bf4199 (update code in client and admin)
                         ),
                       );
                     },
@@ -302,7 +466,20 @@ class _DashboardPageState extends State<DashboardPage> {
 
                             actionLabel: 'View All',
 
+<<<<<<< HEAD
                             onActionTap: () {},
+=======
+                            onActionTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AllRepairsPage(
+                                    provider: _provider,
+                                  ),
+                                ),
+                              );
+                            },
+>>>>>>> 4bf4199 (update code in client and admin)
                           ),
 
                           const SizedBox(height: 12),
@@ -333,6 +510,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           const SizedBox(height: 24),
 
                           // ─────────────────────────────
+<<<<<<< HEAD
                           // Recent Chats
                           // ─────────────────────────────
 
@@ -362,6 +540,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           const SizedBox(height: 24),
 
                           // ─────────────────────────────
+=======
+>>>>>>> 4bf4199 (update code in client and admin)
                           // Recent Builds
                           // ─────────────────────────────
 
@@ -370,7 +550,20 @@ class _DashboardPageState extends State<DashboardPage> {
 
                             actionLabel: 'View All',
 
+<<<<<<< HEAD
                             onActionTap: () {},
+=======
+                            onActionTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AllBuildsPage(
+                                    provider: _provider,
+                                  ),
+                                ),
+                              );
+                            },
+>>>>>>> 4bf4199 (update code in client and admin)
                           ),
 
                           const SizedBox(height: 12),
@@ -398,6 +591,278 @@ class _DashboardPageState extends State<DashboardPage> {
                             ),
                           ),
 
+<<<<<<< HEAD
+=======
+                          const SizedBox(height: 24),
+
+                          const DashboardSectionTitle(title: 'Recent Feedback'),
+                          const SizedBox(height: 12),
+
+                          if (_provider.feedbacks.isEmpty)
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: AppColors.border),
+                              ),
+                              child: Text(
+                                'No feedback yet',
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.textMuted,
+                                ),
+                              ),
+                            )
+                          else
+                            ..._provider.feedbacks.map(
+                              (item) => Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white,
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(color: AppColors.border),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.rate_review_rounded,
+                                        color: AppColors.primary,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.customerName,
+                                              style: AppTextStyles.headingSmall.copyWith(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              item.message,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: AppTextStyles.bodySmall.copyWith(
+                                                color: AppColors.textSecondary,
+                                                height: 1.3,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 6),
+                                            Row(
+                                              children: [
+                                                ...List.generate(
+                                                  item.rating,
+                                                  (_) => const Icon(
+                                                    Icons.star_rounded,
+                                                    size: 14,
+                                                    color: AppColors.warning,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Container(
+                                                  padding: const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 2,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: item.status.color
+                                                            .withOpacity(0.12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(6),
+                                                  ),
+                                                  child: Text(
+                                                    item.status.label,
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.w700,
+                                                      color: item.status.color,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                          const SizedBox(height: 24),
+
+                          const DashboardSectionTitle(title: 'Active Promotions'),
+                          const SizedBox(height: 12),
+
+
+                          const SizedBox(height: 24),
+
+                          const DashboardSectionTitle(title: 'Active Promotions'),
+                          const SizedBox(height: 12),
+
+                          if (_provider.promotions.isEmpty)
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: AppColors.border),
+                              ),
+                              child: Text(
+                                'No active promotions',
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.textMuted,
+                                ),
+                              ),
+                            )
+                          else
+                            ..._provider.promotions.map(
+                              (promo) => Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white,
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(color: AppColors.border),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 44,
+                                        height: 44,
+                                        decoration: BoxDecoration(
+                                          color: promo.type.badgeColor
+                                              .withOpacity(0.12),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Icon(
+                                          Icons.campaign_rounded,
+                                          color: promo.type.badgeColor,
+                                          size: 22,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              promo.title,
+                                              style: AppTextStyles.headingSmall
+                                                  .copyWith(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              promo.subtitle,
+                                              style: AppTextStyles.bodySmall
+                                                  .copyWith(
+                                                color: AppColors.textMuted,
+                                                fontSize: 12,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                          const SizedBox(height: 24),
+
+                          const DashboardSectionTitle(title: 'Active Coupons'),
+                          const SizedBox(height: 12),
+
+                          if (_provider.coupons.isEmpty)
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: AppColors.border),
+                              ),
+                              child: Text(
+                                'No active coupons',
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.textMuted,
+                                ),
+                              ),
+                            )
+                          else
+                            ..._provider.coupons.map(
+                              (coupon) => Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white,
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(color: AppColors.border),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 44,
+                                        height: 44,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primarySoft,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: const Icon(
+                                          Icons.card_giftcard_rounded,
+                                          color: AppColors.primary,
+                                          size: 22,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              coupon.code,
+                                              style: AppTextStyles.headingSmall
+                                                  .copyWith(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700,
+                                                letterSpacing: 0.4,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              coupon.summaryLine,
+                                              style: AppTextStyles.bodySmall
+                                                  .copyWith(
+                                                color: AppColors.textSecondary,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+>>>>>>> 4bf4199 (update code in client and admin)
                           const SizedBox(height: 40),
                         ],
                       ),
@@ -414,6 +879,83 @@ class _DashboardPageState extends State<DashboardPage> {
 }
 
 // ─────────────────────────────────────────────
+<<<<<<< HEAD
+=======
+// Add Option Tile
+// ─────────────────────────────────────────────
+
+class _OptionTile extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final Color bgColor;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _OptionTile({
+    required this.icon,
+    required this.iconColor,
+    required this.bgColor,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceSecondary,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, size: 24, color: iconColor),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppTextStyles.headingSmall.copyWith(fontSize: 14),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.textMuted,
+              size: 18,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
+>>>>>>> 4bf4199 (update code in client and admin)
 // Sticky Header Delegate
 // ─────────────────────────────────────────────
 
@@ -423,10 +965,17 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   const _HeaderDelegate(this.child);
 
   @override
+<<<<<<< HEAD
   double get minExtent => 78;
 
   @override
   double get maxExtent => 78;
+=======
+  double get minExtent => 75;
+
+  @override
+  double get maxExtent => 75;
+>>>>>>> 4bf4199 (update code in client and admin)
 
   @override
   Widget build(
@@ -441,4 +990,8 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
     return oldDelegate.child != child;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 4bf4199 (update code in client and admin)
