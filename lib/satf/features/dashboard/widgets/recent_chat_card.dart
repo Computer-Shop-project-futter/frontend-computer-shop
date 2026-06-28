@@ -40,11 +40,9 @@ class RecentChatCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-<<<<<<< HEAD
-              color: Colors.black.withOpacity(0.03),
-=======
+
               color: Colors.black.withValues(alpha: 0.03),
->>>>>>> 4bf4199 (update code in client and admin)
+
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),

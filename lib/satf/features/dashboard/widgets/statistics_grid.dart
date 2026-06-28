@@ -21,11 +21,9 @@ class StatisticsGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
-<<<<<<< HEAD
-      childAspectRatio: 1.45,
-=======
+
       childAspectRatio: 1.25,
->>>>>>> 4bf4199 (update code in client and admin)
+
       children: [
         DashboardCard(
           label: 'Total Repairs',

@@ -2,10 +2,9 @@ import '../models/dashboard_summary_model.dart';
 import '../models/recent_repair_model.dart';
 import '../models/recent_chat_model.dart';
 import '../models/recent_build_model.dart';
-<<<<<<< HEAD
-=======
+
 import 'package:computer_shop/admin/models/models.dart';
->>>>>>> 4bf4199 (update code in client and admin)
+
 
 /// DashboardService — currently returns static mock data.
 /// Replace each method body with real API calls when backend is ready.
@@ -36,8 +35,7 @@ class DashboardService {
     // TODO: Replace with: final res = await http.get(Uri.parse('$baseUrl/builds?limit=$limit'));
     return RecentBuildModel.mockList().take(limit).toList();
   }
-<<<<<<< HEAD
-=======
+
 
   Future<List<FeedbackItem>> fetchRecentFeedbacks({int limit = 4}) async {
     await Future.delayed(_fakeDelay);
@@ -66,5 +64,5 @@ class DashboardService {
       );
     });
   }
->>>>>>> 4bf4199 (update code in client and admin)
+
 }

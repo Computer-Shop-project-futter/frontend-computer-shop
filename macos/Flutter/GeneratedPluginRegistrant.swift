@@ -5,12 +5,6 @@
 import FlutterMacOS
 import Foundation
 
-<<<<<<< HEAD
-import shared_preferences_foundation
-
-func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
-=======
 import app_links
 import connectivity_plus
 import device_info_plus
@@ -37,5 +31,4 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   UAClientHintsPlugin.register(with: registry.registrar(forPlugin: "UAClientHintsPlugin"))
   UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
   VideoPlayerPlugin.register(with: registry.registrar(forPlugin: "VideoPlayerPlugin"))
->>>>>>> 4bf4199 (update code in client and admin)
 }

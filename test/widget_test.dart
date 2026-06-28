@@ -15,7 +15,7 @@ void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    await tester.pumpWidget(const G14AdminApp());
+    await tester.pumpWidget(const G14AdminApp() as Widget);
 
     // await tester.pumpWidget(const MyApp());
 
@@ -32,4 +32,8 @@ void main() {
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
+}
+
+class G14AdminApp {
+  const G14AdminApp();
 }

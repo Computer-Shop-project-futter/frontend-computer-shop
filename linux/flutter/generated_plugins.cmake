@@ -3,11 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-<<<<<<< HEAD
-)
-
-list(APPEND FLUTTER_FFI_PLUGIN_LIST
-=======
   file_selector_linux
   flutter_secure_storage_linux
   gtk
@@ -16,7 +11,6 @@ list(APPEND FLUTTER_FFI_PLUGIN_LIST
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   jni
->>>>>>> 4bf4199 (update code in client and admin)
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

@@ -1,10 +1,7 @@
 name: computer_shop
 description: "A new Flutter project."
 publish_to: 'none'
-<<<<<<< HEAD
 
-=======
->>>>>>> 4bf4199 (update code in client and admin)
 version: 1.0.0+1
 
 environment:
@@ -13,13 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-<<<<<<< HEAD
-  cupertino_icons: ^1.0.8
-  go_router: ^8.1.0
-  flutter_riverpod: ^2.4.0
-  carousel_slider: ^5.1.2
-  shared_preferences: ^2.5.5
-=======
+
 
   cupertino_icons: ^1.0.8
   
@@ -71,36 +62,23 @@ dependencies:
   # JSON codegen annotations (used directly in several domain models)
   json_annotation: ^4.9.0
 
->>>>>>> 4bf4199 (update code in client and admin)
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-<<<<<<< HEAD
-=======
+
 
   build_runner: ^2.4.6
   json_serializable: ^6.6.1
->>>>>>> 4bf4199 (update code in client and admin)
+
   flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
-<<<<<<< HEAD
-  assets:
-    - assets/images/
-    - assets/videos/
-  fonts:
-    - family: Schyler
-      fonts:
-        - asset: fonts/Schyler-Regular.ttf
-        - asset: fonts/Schyler-Italic.ttf
-          style: italic
-=======
 
   # Assets
   assets:
     - assets/.env
     - assets/images/
     - assets/videos/
->>>>>>> 4bf4199 (update code in client and admin)
+

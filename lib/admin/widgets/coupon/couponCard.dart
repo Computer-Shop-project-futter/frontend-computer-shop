@@ -253,11 +253,7 @@ class CouponList extends StatelessWidget {
   final ValueChanged<CouponModel> onToggle;
   final ValueChanged<CouponModel> onDelete;
 
-<<<<<<< HEAD
   const CouponList({
-=======
-  const CouponList({super.key, 
->>>>>>> 4bf4199 (update code in client and admin)
     required this.coupons, required this.selectedId,
     required this.onSelect, required this.onToggle, required this.onDelete,
   });
@@ -325,11 +321,7 @@ class CouponCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-<<<<<<< HEAD
   const CouponCard({
-=======
-  const CouponCard({super.key, 
->>>>>>> 4bf4199 (update code in client and admin)
     required this.coupon, required this.isSelected,
     required this.onTap, required this.onToggle,
     required this.onEdit, required this.onDelete,
@@ -1023,22 +1015,13 @@ class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-<<<<<<< HEAD
       color: Colors.white,
-=======
->>>>>>> 4bf4199 (update code in client and admin)
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top + 4,
         left: 4, right: 14, bottom: 10,
       ),
       decoration: const BoxDecoration(
-<<<<<<< HEAD
           border: Border(bottom: BorderSide(color: C.border))),
-=======
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: C.border)),
-      ),
->>>>>>> 4bf4199 (update code in client and admin)
       child: Row(children: [
         if (MediaQuery.of(context).size.width < 720)
           IconButton(

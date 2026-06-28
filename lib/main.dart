@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'app.dart';
 
-void main() {
-  runApp(const ProviderScope(child: AppWidget()));
-}
-=======
 // lib/main.dart
 
 import 'package:flutter/material.dart';
@@ -90,4 +82,4 @@ void _handleFlutterError(FlutterErrorDetails details) {
   // Allow framework to handle normally
   FlutterError.presentError(details);
 }
->>>>>>> 4bf4199 (update code in client and admin)
+

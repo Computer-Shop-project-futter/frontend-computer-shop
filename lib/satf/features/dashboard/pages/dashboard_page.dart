@@ -1,46 +1,32 @@
-<<<<<<< HEAD
-import 'package:flutter/material.dart';
 
-import '../app_theme.dart';
-import '../models/recent_chat_model.dart';
-import '../providers/dashboard_provider.dart';
-=======
 import 'package:computer_shop/admin/models/models.dart';
 import 'package:flutter/material.dart';
 import '../app_theme.dart';
 import '../providers/dashboard_provider.dart';
 import '../models/staff_profile_model.dart';
->>>>>>> 4bf4199 (update code in client and admin)
+
 
 import '../widgets/activity_overview_card.dart';
 import '../widgets/dashboard_header.dart';
 import '../widgets/dashboard_section_title.dart';
 import '../widgets/quick_action_card.dart';
 import '../widgets/recent_build_card.dart';
-<<<<<<< HEAD
-import '../widgets/recent_chat_card.dart';
-import '../widgets/recent_repair_card.dart';
-import '../widgets/statistics_grid.dart';
-
-import 'chat_conversation_page.dart';
-=======
 import '../widgets/recent_repair_card.dart';
 import '../widgets/statistics_grid.dart';
 import '../widgets/sidebar_navigation.dart';
 
 import 'all_messages_page.dart';
->>>>>>> 4bf4199 (update code in client and admin)
+
 import 'new_build_page.dart';
 import 'new_repair_page.dart';
 import 'build_detail_page.dart';
 import 'repair_detail_page.dart';
-<<<<<<< HEAD
-=======
+
 import 'customers_page.dart';
 import 'all_builds_page.dart';
 import 'all_repairs_page.dart';
 import 'profile_page.dart';
->>>>>>> 4bf4199 (update code in client and admin)
+
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -51,73 +37,35 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   late final DashboardProvider _provider;
-<<<<<<< HEAD
-=======
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _profileStore = StaffProfileStore();
->>>>>>> 4bf4199 (update code in client and admin)
+
 
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
 
     _provider = DashboardProvider();
     _provider.loadDashboard();
-=======
-    _provider = DashboardProvider();
-    _provider.loadDashboard();
     _profileStore.addListener(_onProfileChanged);
->>>>>>> 4bf4199 (update code in client and admin)
+
   }
 
   @override
   void dispose() {
-<<<<<<< HEAD
-=======
+
     _profileStore.removeListener(_onProfileChanged);
->>>>>>> 4bf4199 (update code in client and admin)
+
     _provider.dispose();
     super.dispose();
   }
 
-<<<<<<< HEAD
-  // ─────────────────────────────────────────────
-  // SnackBar Helper
-  // ─────────────────────────────────────────────
 
-  SnackBar _snack(String message, IconData icon) {
-    return SnackBar(
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: AppColors.textPrimary,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      content: Row(
-        children: [
-          Icon(
-            icon,
-            size: 18,
-            color: Colors.white,
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              message,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-=======
   void _onProfileChanged() {
     // Rebuild the header when profile is updated (e.g., name, avatar)
     setState(() {});
->>>>>>> 4bf4199 (update code in client and admin)
+
   }
 
   // ─────────────────────────────────────────────
@@ -144,28 +92,13 @@ class _DashboardPageState extends State<DashboardPage> {
         );
         break;
 
-<<<<<<< HEAD
-      case 'open_chat':
-        ScaffoldMessenger.of(context).showSnackBar(
-          _snack(
-            'Opening chat inbox...',
-            Icons.chat_bubble_outline_rounded,
-          ),
-        );
-        break;
 
-      case 'customers':
-        ScaffoldMessenger.of(context).showSnackBar(
-          _snack(
-            'Opening customers...',
-            Icons.people_outline_rounded,
-=======
       case 'customers':
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => const CustomersPage(),
->>>>>>> 4bf4199 (update code in client and admin)
+
           ),
         );
         break;
@@ -173,19 +106,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   // ─────────────────────────────────────────────
-<<<<<<< HEAD
-  // Open Chat
-  // ─────────────────────────────────────────────
 
-  void _openChat(RecentChatModel chat) {
-    _provider.markChatAsRead(chat.id);
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ChatConversationPage(
-          chat: chat,
-=======
   // Add Options Bottom Sheet
   // ─────────────────────────────────────────────
 
@@ -242,18 +163,13 @@ class _DashboardPageState extends State<DashboardPage> {
               },
             ),
           ],
->>>>>>> 4bf4199 (update code in client and admin)
+
         ),
       ),
     );
   }
 
-<<<<<<< HEAD
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-=======
+
   int get _chatUnreadCount =>
       _provider.chats.where((c) => !c.isRead).length;
 
@@ -275,7 +191,7 @@ class _DashboardPageState extends State<DashboardPage> {
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
->>>>>>> 4bf4199 (update code in client and admin)
+
 
       body: AnimatedBuilder(
         animation: _provider,
@@ -340,17 +256,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 pinned: true,
                 delegate: _HeaderDelegate(
                   DashboardHeader(
-<<<<<<< HEAD
-                    staffName: 'Alex Rivers',
-                    branchName: 'Downtown Flagship',
-                    notificationCount: 3,
 
-                    onNotificationTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        _snack(
-                          'Notifications',
-                          Icons.notifications_outlined,
-=======
                     notificationCount: _provider.pendingRequestCount,
                     chatUnreadCount: _chatUnreadCount,
                     onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
@@ -377,7 +283,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => const ProfilePage(),
->>>>>>> 4bf4199 (update code in client and admin)
+
                         ),
                       );
                     },
@@ -466,9 +372,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
                             actionLabel: 'View All',
 
-<<<<<<< HEAD
-                            onActionTap: () {},
-=======
+
                             onActionTap: () {
                               Navigator.push(
                                 context,
@@ -479,7 +383,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                               );
                             },
->>>>>>> 4bf4199 (update code in client and admin)
                           ),
 
                           const SizedBox(height: 12),
@@ -510,38 +413,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           const SizedBox(height: 24),
 
                           // ─────────────────────────────
-<<<<<<< HEAD
-                          // Recent Chats
-                          // ─────────────────────────────
 
-                          DashboardSectionTitle(
-                            title: 'Recent Chats',
-
-                            actionLabel: 'View All',
-
-                            onActionTap: () {},
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          ..._provider.chats.map(
-                            (chat) => Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: 10),
-
-                              child: RecentChatCard(
-                                chat: chat,
-
-                                onTap: () => _openChat(chat),
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 24),
-
-                          // ─────────────────────────────
-=======
->>>>>>> 4bf4199 (update code in client and admin)
                           // Recent Builds
                           // ─────────────────────────────
 
@@ -550,9 +422,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
                             actionLabel: 'View All',
 
-<<<<<<< HEAD
-                            onActionTap: () {},
-=======
+
                             onActionTap: () {
                               Navigator.push(
                                 context,
@@ -563,7 +433,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                               );
                             },
->>>>>>> 4bf4199 (update code in client and admin)
+
                           ),
 
                           const SizedBox(height: 12),
@@ -591,8 +461,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             ),
                           ),
 
-<<<<<<< HEAD
-=======
+
                           const SizedBox(height: 24),
 
                           const DashboardSectionTitle(title: 'Recent Feedback'),
@@ -862,7 +731,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                             ),
 
->>>>>>> 4bf4199 (update code in client and admin)
+
                           const SizedBox(height: 40),
                         ],
                       ),
@@ -879,8 +748,7 @@ class _DashboardPageState extends State<DashboardPage> {
 }
 
 // ─────────────────────────────────────────────
-<<<<<<< HEAD
-=======
+
 // Add Option Tile
 // ─────────────────────────────────────────────
 
@@ -955,7 +823,7 @@ class _OptionTile extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
->>>>>>> 4bf4199 (update code in client and admin)
+
 // Sticky Header Delegate
 // ─────────────────────────────────────────────
 
@@ -965,17 +833,12 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   const _HeaderDelegate(this.child);
 
   @override
-<<<<<<< HEAD
-  double get minExtent => 78;
 
-  @override
-  double get maxExtent => 78;
-=======
   double get minExtent => 75;
 
   @override
   double get maxExtent => 75;
->>>>>>> 4bf4199 (update code in client and admin)
+
 
   @override
   Widget build(
@@ -990,8 +853,6 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
     return oldDelegate.child != child;
   }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 4bf4199 (update code in client and admin)
+

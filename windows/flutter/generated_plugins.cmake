@@ -3,11 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-<<<<<<< HEAD
-)
-
-list(APPEND FLUTTER_FFI_PLUGIN_LIST
-=======
   app_links
   connectivity_plus
   file_selector_windows
@@ -18,7 +13,6 @@ list(APPEND FLUTTER_FFI_PLUGIN_LIST
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   jni
->>>>>>> 4bf4199 (update code in client and admin)
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

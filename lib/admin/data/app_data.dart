@@ -179,13 +179,11 @@ class AppData {
     'Home',
     'Orders',
     'Inventory',
-<<<<<<< HEAD
-    'Metrics',
-=======
+
     'Feedback',
     'Promotion',
     'Coupon Points',
->>>>>>> 4bf4199 (update code in client and admin)
+
   ];
 
   static List<OrderDetail> get orders => [

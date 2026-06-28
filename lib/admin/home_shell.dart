@@ -9,12 +9,11 @@ import 'widgets/category/components_screen.dart';
 import 'widgets/dashboard/dashboard_screen.dart';
 import 'widgets/order/orders_screen.dart';
 import 'widgets/sidebar/app_sidebar.dart' show AppSidebar;
-<<<<<<< HEAD
-=======
+
 import 'widgets/feedback/feedback_screen.dart';
 import 'widgets/promotion/promotion_screen.dart';
 import 'widgets/coupon/couponCard.dart';
->>>>>>> 4bf4199 (update code in client and admin)
+
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -37,23 +36,13 @@ class _HomeShellState extends State<HomeShell> {
       case 2:
         return ComponentsScreen(onMenuTap: _openDrawer);
       case 3:
-<<<<<<< HEAD
-        return _PlaceholderScreen(
-          title: 'Metrics',
-          onMenuTap: _openDrawer,
-        );
-      case 4:
-        return _PlaceholderScreen(
-          title: _activePage,
-          onMenuTap: _openDrawer,
-        );
-=======
+
         return FeedbackScreen(onMenuTap: _openDrawer);
       case 4:
         return PromotionScreen(onMenuTap: _openDrawer);
       case 5:
         return CouponScreen(onMenuTap: _openDrawer);
->>>>>>> 4bf4199 (update code in client and admin)
+
       case 0:
       default:
         return DashboardScreen(
@@ -75,20 +64,14 @@ class _HomeShellState extends State<HomeShell> {
       case 'Partner Brands':
       case 'Inventory':
         return 2;
-<<<<<<< HEAD
-      case 'Metrics':
-      case 'Feedback':
-      case 'Promotion':
-      case 'Coupon Points':
-        return 4;
-=======
+
       case 'Feedback':
         return 3;
       case 'Promotion':
         return 4;
       case 'Coupon Points':
         return 5;
->>>>>>> 4bf4199 (update code in client and admin)
+
       case 'Dashboard Overview':
       default:
         return 0;
@@ -102,15 +85,13 @@ class _HomeShellState extends State<HomeShell> {
       case 2:
         return 'Master Catalog';
       case 3:
-<<<<<<< HEAD
-        return 'Metrics';
-=======
+
         return 'Feedback';
       case 4:
         return 'Promotion';
       case 5:
         return 'Coupon Points';
->>>>>>> 4bf4199 (update code in client and admin)
+
       case 0:
       default:
         return 'Dashboard Overview';
@@ -152,14 +133,12 @@ class _HomeShellState extends State<HomeShell> {
               child: AppSidebar(
                 activePage: _activePage,
                 onPageSelected: (page) {
-<<<<<<< HEAD
-                  setState(() => _activePage = page);
-=======
+
                   setState(() {
                     _activePage = page;
                     _bottomNavIndex = _pageIndexForLabel(page);
                   });
->>>>>>> 4bf4199 (update code in client and admin)
+                  Navigator.of(context).pop();
                 },
               ),
             ),
@@ -324,15 +303,13 @@ class _BottomNav extends StatelessWidget {
       case 2:
         return Icons.category_outlined;
       case 3:
-<<<<<<< HEAD
-        return Icons.bar_chart_outlined;
-=======
+
         return Icons.rate_review_outlined;
       case 4:
         return Icons.campaign_outlined;
       case 5:
         return Icons.card_giftcard_outlined;
->>>>>>> 4bf4199 (update code in client and admin)
+
       default:
         return Icons.circle_outlined;
     }

@@ -4,10 +4,9 @@
 
 import 'package:flutter/material.dart';
 import '../../models/models.dart';
-<<<<<<< HEAD
-=======
+
 import '../../shared/component_store.dart';
->>>>>>> 4bf4199 (update code in client and admin)
+
 import 'card_component.dart';
 import 'add_edit_component_page.dart';
 
@@ -29,12 +28,10 @@ class _ComponentsScreenState extends State<ComponentsScreen> {
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
-    _items = List.from(ComponentData.items);
-=======
+
     // _items = List.from(ComponentData.items);
     _items = ComponentStore.items;
->>>>>>> 4bf4199 (update code in client and admin)
+
   }
 
   @override
@@ -63,15 +60,12 @@ class _ComponentsScreenState extends State<ComponentsScreen> {
     );
     if (updated != null) {
       setState(() {
-<<<<<<< HEAD
-        final idx = _items.indexWhere((e) => e.id == updated.id);
-        if (idx >= 0) _items[idx] = updated;
-=======
+
         _items.indexWhere((e) => e.id == updated.id);
         // if (idx >= 0) _items[idx] = updated;
         ComponentStore.update(updated);
         setState(() {});
->>>>>>> 4bf4199 (update code in client and admin)
+
       });
       _showSnack('${updated.name} updated', const Color(0xFF3B82F6));
     }
@@ -96,12 +90,10 @@ class _ComponentsScreenState extends State<ComponentsScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-<<<<<<< HEAD
-              setState(() => _items.removeWhere((e) => e.id == item.id));
-=======
+
               setState(() => ComponentStore.delete(item.id));
               setState(() {});
->>>>>>> 4bf4199 (update code in client and admin)
+
               Navigator.pop(context);
               _showSnack('${item.name} deleted', const Color(0xFFEF4444));
             },
@@ -135,13 +127,11 @@ class _ComponentsScreenState extends State<ComponentsScreen> {
       MaterialPageRoute(builder: (_) => const AddEditComponentPage()),
     );
     if (newItem != null) {
-<<<<<<< HEAD
-      setState(() => _items.insert(0, newItem));
-=======
+
       //setState(() => _items.insert(0, newItem));
       ComponentStore.add(newItem);
       setState(() {});
->>>>>>> 4bf4199 (update code in client and admin)
+
       _showSnack('${newItem.name} added', const Color(0xFF10B981));
     }
   }

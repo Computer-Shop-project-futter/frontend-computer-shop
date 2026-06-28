@@ -3,18 +3,14 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import '../../data/app_data.dart';
-import '../../data/app_theme.dart';
-import '../../models/models.dart';
-=======
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../data/app_data.dart';
 import '../../data/app_theme.dart';
 import '../../models/models.dart';
 import 'package:computer_shop/auth/presentation/providers/auth_provider.dart';
->>>>>>> 4bf4199 (update code in client and admin)
+
 
 class AppSidebar extends StatelessWidget {
   final String activePage;
@@ -90,17 +86,7 @@ class _BrandHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-<<<<<<< HEAD
-          _G14Badge(),
-          const SizedBox(width: 10),
-          const Text(
-            'G14',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.2,
-=======
+
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
             decoration: BoxDecoration(
@@ -125,7 +111,7 @@ class _BrandHeader extends StatelessWidget {
               fontSize: 14,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
->>>>>>> 4bf4199 (update code in client and admin)
+
             ),
           ),
         ],
@@ -134,34 +120,7 @@ class _BrandHeader extends StatelessWidget {
   }
 }
 
-<<<<<<< HEAD
-class _G14Badge extends StatelessWidget {
-  final double fontSize;
-  const _G14Badge({this.fontSize = 11});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppTheme.accent,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        'G14',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: fontSize,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
-  }
-}
-
-=======
->>>>>>> 4bf4199 (update code in client and admin)
 // ── User tile ─────────────────────────────────
 class _UserTile extends StatelessWidget {
   final AdminUser user;
@@ -351,15 +310,7 @@ class _NavIcon extends StatelessWidget {
 }
 
 // ── Terminate session button ──────────────────
-<<<<<<< HEAD
-class _TerminateButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
-      child: InkWell(
-        onTap: () {},
-=======
+
 class _TerminateButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -367,7 +318,7 @@ class _TerminateButton extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
       child: InkWell(
         onTap: () => _confirmLogout(context, ref),
->>>>>>> 4bf4199 (update code in client and admin)
+
         borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -395,8 +346,6 @@ class _TerminateButton extends ConsumerWidget {
       ),
     );
   }
-<<<<<<< HEAD
-=======
 
   Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
@@ -433,5 +382,5 @@ class _TerminateButton extends ConsumerWidget {
       }
     }
   }
->>>>>>> 4bf4199 (update code in client and admin)
+
 }

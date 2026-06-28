@@ -264,8 +264,7 @@ class AdminUser {
   });
 }
 
-<<<<<<< HEAD
-=======
+
 // ── Feedback ────────────────────────────────────
 
 enum FeedbackStatus { newFeedback, inReview, resolved }
@@ -486,7 +485,7 @@ class PromotionData {
       ];
 }
 
->>>>>>> 4bf4199 (update code in client and admin)
+
 enum ComponentCategory { all, cpu, gpu, ram, storage, mb }
  
 extension ComponentCategoryX on ComponentCategory {
