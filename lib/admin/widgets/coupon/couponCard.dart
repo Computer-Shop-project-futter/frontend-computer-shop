@@ -86,34 +86,31 @@ class CouponScreenState extends State<CouponScreen> {
   Widget build(BuildContext context) {
     final wide = MediaQuery.of(context).size.width >= 720;
 
-    return Scaffold(
-      backgroundColor: C.bg,
-      body: Column(children: [
-        _AppBar(onMenuTap: widget.onMenuTap, onNew: _newCoupon),
-        Expanded(
-          child: wide
-              ? _WideLayout(
-                  coupons: coupons,
-                  editing: _editing,
-                  onSelect: _selectCoupon,
-                  onToggle: _onToggle,
-                  onDelete: _onDelete,
-                  onSaved: _onSaved,
-                  onNew: _newCoupon,
-                )
-              : _NarrowLayout(
-                  coupons: coupons,
-                  onSelect: (c) {
-                    _selectCoupon(c);
-                    _openFormSheet(context, c);
-                  },
-                  onToggle: _onToggle,
-                  onDelete: _onDelete,
-                  onNew: () => _openFormSheet(context, null),
-                ),
-        ),
-      ]),
-    );
+    return Column(children: [
+      _AppBar(onMenuTap: widget.onMenuTap, onNew: _newCoupon),
+      Expanded(
+        child: wide
+            ? _WideLayout(
+                coupons: coupons,
+                editing: _editing,
+                onSelect: _selectCoupon,
+                onToggle: _onToggle,
+                onDelete: _onDelete,
+                onSaved: _onSaved,
+                onNew: _newCoupon,
+              )
+            : _NarrowLayout(
+                coupons: coupons,
+                onSelect: (c) {
+                  _selectCoupon(c);
+                  _openFormSheet(context, c);
+                },
+                onToggle: _onToggle,
+                onDelete: _onDelete,
+                onNew: () => _openFormSheet(context, null),
+              ),
+      ),
+    ]);
   }
 
   void _openFormSheet(BuildContext context, CouponModel? coupon) {
@@ -346,7 +343,7 @@ class CouponCard extends StatelessWidget {
             width: isSelected ? 1.5 : 1,
           ),
           boxShadow: isSelected
-              ? [BoxShadow(color: C.accent.withOpacity(0.12),
+              ? [BoxShadow(color: C.accent.withValues(alpha: 0.12),
                   blurRadius: 8, offset: const Offset(0, 2))]
               : [const BoxShadow(color: Color(0x08000000),
                   blurRadius: 4, offset: Offset(0, 1))],
@@ -625,7 +622,7 @@ class CouponFormState extends State<CouponForm> {
                   color: C.accent,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [BoxShadow(
-                      color: C.accent.withOpacity(0.3),
+                      color: C.accent.withValues(alpha: 0.3),
                       blurRadius: 8, offset: const Offset(0, 3))],
                 ),
                 child: const Text('Save',
@@ -1015,12 +1012,12 @@ class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top + 4,
         left: 4, right: 14, bottom: 10,
       ),
       decoration: const BoxDecoration(
+          color: Colors.white,
           border: Border(bottom: BorderSide(color: C.border))),
       child: Row(children: [
         if (MediaQuery.of(context).size.width < 720)
@@ -1052,7 +1049,7 @@ class _AppBar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: C.accent,
                 borderRadius: BorderRadius.circular(9),
-                boxShadow: [BoxShadow(color: C.accent.withOpacity(0.3),
+                boxShadow: [BoxShadow(color: C.accent.withValues(alpha: 0.3),
                     blurRadius: 6, offset: const Offset(0, 2))],
               ),
               child: const Text('+ New',

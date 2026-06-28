@@ -84,13 +84,6 @@ class _HomeShellState extends State<HomeShell> {
         return 'Order Fulfillment';
       case 2:
         return 'Master Catalog';
-      case 3:
-
-        return 'Feedback';
-      case 4:
-        return 'Promotion';
-      case 5:
-        return 'Coupon Points';
 
       case 0:
       default:
@@ -302,14 +295,6 @@ class _BottomNav extends StatelessWidget {
         return Icons.receipt_long_outlined;
       case 2:
         return Icons.category_outlined;
-      case 3:
-
-        return Icons.rate_review_outlined;
-      case 4:
-        return Icons.campaign_outlined;
-      case 5:
-        return Icons.card_giftcard_outlined;
-
       default:
         return Icons.circle_outlined;
     }

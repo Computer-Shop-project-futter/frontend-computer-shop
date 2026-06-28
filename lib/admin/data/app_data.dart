@@ -11,8 +11,6 @@ class AppData {
     name: 'Alexander R.',
     role: 'SYSTEM ADMIN',
   );
-
-
   
   // ── Dashboard metrics ────────────────────────
   static List<MetricItem> get metrics => [
@@ -179,10 +177,6 @@ class AppData {
     'Home',
     'Orders',
     'Inventory',
-
-    'Feedback',
-    'Promotion',
-    'Coupon Points',
 
   ];
 

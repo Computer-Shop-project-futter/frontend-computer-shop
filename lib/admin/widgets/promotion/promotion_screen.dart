@@ -96,7 +96,7 @@ class _PromotionScreenState extends State<PromotionScreen> {
                 },
               ),
             ),
-          ]),
+          ])
         ),
       ),
     );
@@ -115,10 +115,7 @@ class _PromotionScreenState extends State<PromotionScreen> {
   Widget build(BuildContext context) {
     final wide = MediaQuery.of(context).size.width >= 720;
 
-    return Scaffold(
-      backgroundColor: C.bg,
-      body: SafeArea(
-        child: Column(children: [
+    return Column(children: [
           _AppBar(onMenuTap: widget.onMenuTap, onNew: _newPromotion),
           Expanded(
             child: wide
@@ -142,9 +139,7 @@ class _PromotionScreenState extends State<PromotionScreen> {
                     onNew: () => _openFormSheet(context, null),
                   ),
           ),
-        ]),
-      ),
-    );
+        ]);
   }
 }
 

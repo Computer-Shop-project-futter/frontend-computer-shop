@@ -122,10 +122,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   Widget build(BuildContext context) {
     final filtered = _filtered;
 
-    return Scaffold(
-      backgroundColor: C.bg,
-      body: SafeArea(
-        child: Column(
+    return Column(
           children: [
             _AppBar(onMenuTap: widget.onMenuTap),
             _SummaryRow(items: _items),
@@ -149,9 +146,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     ),
             ),
           ],
-        ),
-      ),
-    );
+        );
   }
 }
 
